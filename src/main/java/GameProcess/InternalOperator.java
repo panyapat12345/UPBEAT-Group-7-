@@ -1,18 +1,21 @@
 package GameProcess;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 class Starter{
     Starter(){
-        Long[] Variables = new Long[16];
+        Double[] Variables = new Double[16];
         try{
             File ConfigFile = new File("src/main/java/GameProcess/ConfigurationFile.txt");
             Scanner ConfigReader = new Scanner(ConfigFile);
             while (ConfigReader.hasNextLine()) {
                 String CurrentLine = ConfigReader.nextLine().replaceAll("\\\\s+", "").trim();
                 String Variable = CurrentLine.substring(0, CurrentLine.indexOf('='));
-                long Value = Math.abs(Long.valueOf(CurrentLine.substring(CurrentLine.indexOf('=')+1, Integer.valueOf(CurrentLine.length()))));
+                Double Value = Math.abs(Double.valueOf(CurrentLine.substring(CurrentLine.indexOf('=')+1, Integer.valueOf(CurrentLine.length()))));
                 switch (Variable){
                     case "m" -> { Variables[0] = Value; }
                     case "n" -> { Variables[1] = Value; }
@@ -39,21 +42,23 @@ class Starter{
 class InternalOperator implements InternalOperatorInterface{
     int m;
     int n;
-    private Long init_plan_min;
-    private Long init_plan_sec;
-    private Long init_budget;
-    private Long init_center_dep;
-    private Long plan_rev_min;
-    private Long plan_rev_sec;
-    private Long rev_cost;
-    private Long max_dep;
-    private Long interest_pct;
-    private Long[] Variables;
+    private Double init_plan_min;
+    private Double init_plan_sec;
+    private Double init_budget;
+    private Double init_center_dep;
+    private Double plan_rev_min;
+    private Double plan_rev_sec;
+    private Double rev_cost;
+    private Double max_dep;
+    private Double interest_pct;
+    private Double[] Variables;
     private GameProcess.Territory Territory;
+    private List<Player> Players = new LinkedList<>();
+    private int Turn = 0;
 
-    InternalOperator(Long[] Variables){
-        m = Math.toIntExact(Variables[0]);
-        n = Math.toIntExact(Variables[1]);
+    InternalOperator(Double[] Variables){
+        m = Variables[0].intValue();
+        n = Variables[1].intValue();
         init_plan_min = Variables[2];
         init_plan_sec = Variables[3];
         init_budget = Variables[4];
@@ -69,7 +74,7 @@ class InternalOperator implements InternalOperatorInterface{
         Territory = new Territory(m, n);
     }
 
-    public Long[] GetVariables() { return Variables; }
+    public Double[] GetVariables(){ return Variables; }
 
     @Override
     public int rows() {
@@ -80,20 +85,71 @@ class InternalOperator implements InternalOperatorInterface{
     public int cols() {
         return n;
     }
+
+    public Region GetCurrentRegionInfo(int M, int N){
+        return Territory.GetCurrentRegionInfo(M, N);
+    }
+
+    public int maxdeposit() { return max_dep.intValue(); }
+
+    public int random() { return ThreadLocalRandom.current().nextInt(0, 999); }
+
+    public void NextTurn(){
+        if(Turn < Players.size()) Turn++;
+        for(int cycle = 0; cycle < 1000; cycle++){
+
+        }
+    }
 }
 
 class Territory implements TerritoryInterface{
     private int m;
     private int n;
-    Region[][] Territory = null;
+    private Region[][] Territory = null;
     Territory(int m, int n){
         this.m = m;
         this.n = n;
         Territory = new Region[m][n];
     }
+    public Region GetCurrentRegionInfo(int M, int N){
+        if((M >= 0 && N >= 0) && (M < m && N < n)) return Territory[M][N];
+        else return new Region();
+    }
+
+    public int opponent(int PlayerIndex, int CurrentM, int CurrentN){
+        return 0;
+    }
 }
 
 class Region {
+    private int PlayerOwnerIndex;
+    private Double Deposit;
+    private Double InterestRate;
+    private String Type = "Empty";
+    public int GetOwner(){ return PlayerOwnerIndex; }
+    public int deposit(){ return Deposit.intValue(); }
+    public int interest() { return (int)(Deposit*InterestRate/100.0); }
+}
 
+class Player {
+    String ConstructionPlan = null;
+    private int CapitalPositionN;
+    private int CapitalPositionM;
+    CityCrew crew = null;
+    public void NewCityCrew(){
+        crew = new CityCrew(CapitalPositionN, CapitalPositionM);
+    }
+}
+
+class CityCrew {
+    private int PositionN;
+    private int PositionM;
+    Double BudGet;
+    CityCrew(int PositionN, int PositionM){
+        this.PositionN = PositionN;
+        this.PositionM = PositionM;
+    }
+    public int currow(){ return PositionN; }
+    public int curcol(){ return PositionN; }
 }
 
