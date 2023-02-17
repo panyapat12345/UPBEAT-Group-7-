@@ -54,6 +54,7 @@ class InternalOperator implements InternalOperatorInterface{
     private Double[] Variables;
     private GameProcess.Territory Territory;
     private List<Player> Players = new LinkedList<>();
+    private int TotalPlayers = 0;
     private int Turn = 0;
 
     InternalOperator(Double[] Variables){
@@ -72,6 +73,11 @@ class InternalOperator implements InternalOperatorInterface{
         for(int i = 0; i < 11; i++) System.out.println(Variables[i]);
 
         Territory = new Territory(m, n);
+    }
+
+    public void AddPlayer(){
+        Players.add(new Player(TotalPlayers, "Null"));
+        TotalPlayers++;
     }
 
     public Double[] GetVariables(){ return Variables; }
@@ -95,9 +101,9 @@ class InternalOperator implements InternalOperatorInterface{
     public int random() { return ThreadLocalRandom.current().nextInt(0, 999); }
 
     public void NextTurn(){
-        if(Turn < Players.size()) Turn++;
+        Player CurrentPlayer = Players.get(Turn/TotalPlayers);
         for(int cycle = 0; cycle < 1000; cycle++){
-
+            CurrentPlayer.NextConstructionPlanNode();
         }
     }
 }
@@ -132,12 +138,21 @@ class Region {
 }
 
 class Player {
+    private int PlayerIndex;
     String ConstructionPlan = null;
     private int CapitalPositionN;
     private int CapitalPositionM;
     CityCrew crew = null;
-    public void NewCityCrew(){
+    Player(int Id, String constructionPlan){
+        PlayerIndex = Id;
+        ConstructionPlan = constructionPlan;
+    }
+    private void NewCityCrew(){
         crew = new CityCrew(CapitalPositionN, CapitalPositionM);
+    }
+    public void NextConstructionPlanNode(){
+        this.NewCityCrew();
+        return;
     }
 }
 
@@ -150,6 +165,6 @@ class CityCrew {
         this.PositionM = PositionM;
     }
     public int currow(){ return PositionN; }
-    public int curcol(){ return PositionN; }
+    public int curcol(){ return PositionM; }
 }
 
