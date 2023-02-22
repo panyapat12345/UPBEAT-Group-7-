@@ -27,11 +27,19 @@ public class Identifier implements Expr{
 
         if(bindings.containsKey(name))
             return bindings.get(name);
-        throw new EvalError("undefined variable: " + name);
+        else {
+            bindings.put(name, 0);
+            return 0;
+        }
+        // throw new EvalError("undefined variable: " + name);
     }
 
     public void prettyPrint(StringBuilder s) {
         s.append(name);
+    }
+
+    public String toString(){
+        return name;
     }
 
     @Override

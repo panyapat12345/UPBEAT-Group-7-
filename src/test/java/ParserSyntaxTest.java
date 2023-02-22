@@ -1,4 +1,4 @@
-import AST.Node;
+import AST.*;
 import Exception.EvalError;
 import Exception.LexicalError;
 import Exception.SyntaxError;
@@ -24,15 +24,32 @@ class ParserSyntaxTest {
     private void parseTest(String src){
         try {
             Parser p = new PlanParser(new PlanTokenizer(src));
-            Node AST =  p.parse();
+            State AST =  p.parse();
+
+            // parse testing
             StringBuilder s = new StringBuilder();
-            AST.prettyPrint(s);
-            System.out.println(s.toString());
+            if(AST != null)
+                AST.prettyPrint(s);
+            //System.out.print(s.toString());
+
+            // doState testing
+            Map<String, Integer> binding = new HashMap<>();
+            if(AST != null)
+                AST.doState(binding);
+            printMap(binding);
         } catch (SyntaxError e) {
 //            System.err.println(e.getMessage() + " : " + src);
             System.err.println(e.getMessage());
             fail();
         }
+    }
+
+    private void printMap(Map<String, Integer> binding){
+        System.out.println("{");
+        for ( String identifier : binding.keySet()){
+            System.out.println("  " + identifier + " = " + binding.get(identifier) + ",");
+        }
+        System.out.println("}");
     }
 
     private void readFileTest (String readPath, String writePath) {
@@ -50,12 +67,21 @@ class ParserSyntaxTest {
                 parseString.append(" ");
             }
             System.err.println(parseString.length());
+            //System.out.println(parseString.toString());
 
             try {
                 Parser p = new PlanParser(new PlanTokenizer(parseString.toString()));
-                Node AST = p.parse();
-                AST.prettyPrint(result);
-                System.out.println(result.toString());
+                // parse testing
+                State AST = p.parse();
+                if(AST != null)
+                    AST.prettyPrint(result);
+                // System.out.println(result.toString());
+
+                // doState testing
+                Map<String, Integer> binding = new HashMap<>();
+                if(AST != null)
+                    AST.doState(binding);
+                printMap(binding);
             } catch(SyntaxError e) {
                 System.err.println(e.getMessage());
                 fail();
@@ -71,6 +97,7 @@ class ParserSyntaxTest {
 
     @Test
     void caseOne() {
+        parseTest("budget=10000");
         parseTest("m=20");
         parseTest("n=15");
         parseTest("init_plan_min=5");
@@ -197,7 +224,18 @@ class ParserSyntaxTest {
     }
 
     @Test
-    void planTest() {
-        readFileTest("src/test/Plan1.txt", "src/test/parseTestResult.txt");
+    void planIfTest() {
+        // readFileTest("src/test/Plan1.txt", "src/test/parseTestResult.txt");
+        // readFileTest("src/test/ifPlan1.txt", "src/test/ifParseTestResult1.txt");
+        // readFileTest("src/test/ifPlan2.txt", "src/test/ifParseTestResult2.txt");
+        // readFileTest("src/test/ifPlan3.txt", "src/test/ifParseTestResult3.txt");
+        // readFileTest("src/test/ifPlan4.txt", "src/test/ifParseTestResult4.txt");
+        // readFileTest("src/test/ifPlan5.txt", "src/test/ifParseTestResult5.txt");
+        // readFileTest("src/test/ifPlan6.txt", "src/test/ifParseTestResult6.txt");
+    }
+
+    @Test
+    void planWhileTest() {
+        readFileTest("src/test/whilePlan1.txt", "src/test/whileParseTestResult1.txt");
     }
 }

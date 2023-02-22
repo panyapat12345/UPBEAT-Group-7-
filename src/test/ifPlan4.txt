@@ -1,0 +1,34 @@
+      Budget = 1000000
+      opponentLoc = 14
+
+      nearbyUpleft = 101
+      nearbyDownleft = 102
+      nearbyDown = 103
+      nearbyDownright = 104
+      nearbyUpright = 105
+      nearbyUp = 106
+
+      if (opponentLoc % 10 - 5) then {
+        cost = 10 ^ (nearbyUpleft % 100 + 1)
+        if (Budget - cost) then shoot upleft cost else {}
+      }
+      else if (opponentLoc % 10 - 4) then {
+        cost = 10 ^ (nearbyDownleft % 100 + 1)
+        if (Budget - cost) then shoot downleft cost else {}
+      }
+      else if (opponentLoc % 10 - 3) then {
+        cost = 10 ^ (nearbyDown % 100 + 1)
+        if (Budget - cost) then shoot down cost else {}
+      }
+      else if (opponentLoc % 10 - 2) then {
+        cost = 10 ^ (nearbyDownright % 100 + 1)
+        if (Budget - cost) then shoot downright cost else {}
+      }
+      else if (opponentLoc % 10 - 1) then {
+        cost = 10 ^ (nearbyUpright % 100 + 1)
+        if (Budget - cost) then shoot upright cost else {}
+      }
+      else {
+        cost = 10 ^ (nearbyUp % 100 + 1)
+        if (Budget - cost) then shoot up cost else {}
+      }

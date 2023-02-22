@@ -17,6 +17,6 @@ public class Assign implements Command{
     }
 
     public void doState(Map<String, Integer> bindings) {
-
+        bindings.put(left.toString(), right.eval(bindings));
     }
 }

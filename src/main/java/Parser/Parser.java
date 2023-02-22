@@ -3,7 +3,7 @@ import Exception.*;
 import AST.*;
 
 public interface Parser {
-    Node parse() throws SyntaxError;
+    State parse() throws SyntaxError;
 
     static boolean isNumber(String s) {
         try {

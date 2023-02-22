@@ -50,6 +50,24 @@ public class Action implements Command{
     }
 
     public void doState(Map<String, Integer> bindings) {
-
+        if(key.equals("done")){
+            System.out.println(key);
+            // gameSystem.instance().done();
+        } else if(key.equals("relocate")){
+            System.out.println(key);
+            // gameSystem.instance().relocate();
+        } else if(key.equals("move")){
+            System.out.println(key + " " + left.toString());
+            // gameSystem.instance().move(left.toString());
+        } else if(key.equals("invest")){
+            System.out.println(key + " " + right.eval(bindings));
+            // gameSystem.instance().invest(right.eval(bindings));
+        } else if(key.equals("collect")){
+            System.out.println(key + " " + right.eval(bindings));
+            // gameSystem.instance().collect(right.eval(bindings));
+        } else if(key.equals("shoot")){
+            System.out.println(key + " " + left.toString() + " " + right.eval((bindings)));
+            // gameSystem.instance().shoot(left.toString(), right.eval(bindings));
+        }
     }
 }

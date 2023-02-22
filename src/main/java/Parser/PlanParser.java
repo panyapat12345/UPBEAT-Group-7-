@@ -17,8 +17,8 @@ public class PlanParser implements Parser{
         this.tkz = tkz;
     }
 
-    public Node parse() throws SyntaxError {
-        Node v;
+    public State parse() throws SyntaxError {
+        State v;
         try {
             v = parsePlan();
         } catch (NoSuchElementException e) {
@@ -42,13 +42,16 @@ public class PlanParser implements Parser{
         StateTree plan = null, current = null;
         try {
             while(tkz.hasNextToken()){
-                if(plan == null) {
-                    plan = new StateTree((State) parseState(), null);
-                    current = plan;
-                } else {
-                    StateTree next = new StateTree((State) parseState(), null);
-                    current.setNext(next);
-                    current = next;
+                State parseStateResult = (State) parseState();
+                if(parseStateResult != null) {
+                    if(plan == null) {
+                        plan = new StateTree(parseStateResult, null);
+                        current = plan;
+                    } else {
+                        StateTree next = new StateTree(parseStateResult, null);
+                        current.setNext(next);
+                        current = next;
+                    }
                 }
             }
             return plan;

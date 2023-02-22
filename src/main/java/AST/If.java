@@ -35,6 +35,16 @@ public class If implements ConState{
     }
 
     public void doState(Map<String, Integer> bindings) {
+        if(checkCon(bindings)){
+            if (trueState != null)
+                trueState.doState(bindings);
+        } else {
+            if(falseState != null)
+                falseState.doState(bindings);
+        }
+    }
 
+    public boolean checkCon(Map<String, Integer> bindings) {
+        return expr.eval(bindings) > 0;
     }
 }

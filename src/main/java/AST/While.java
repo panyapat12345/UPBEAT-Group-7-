@@ -27,6 +27,12 @@ public class While implements ConState{
     }
 
     public void doState(Map<String, Integer> bindings) {
+        for(int counter = 0; counter < 10000 && checkCon(bindings); counter++){
+            trueState.doState(bindings);
+        }
+    }
 
+    public boolean checkCon(Map<String, Integer> bindings) {
+        return expr.eval(bindings) > 0;
     }
 }

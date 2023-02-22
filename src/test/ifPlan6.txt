@@ -1,0 +1,9 @@
+      Random = 96
+
+      dir = Random % 6
+      if (dir - 4) then move upleft
+      else if (dir - 3) then move downleft
+      else if (dir - 2) then move down
+      else if (dir - 1) then move downright
+      else if (dir) then move upright
+      else move up

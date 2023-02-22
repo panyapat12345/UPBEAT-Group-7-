@@ -21,7 +21,9 @@ public class StateTree implements State{
     }
 
     public void doState(Map<String, Integer> bindings) {
-
+        data.doState(bindings);
+        if(next != null)
+            next.doState(bindings);
     }
 
     public void setNext(State next){

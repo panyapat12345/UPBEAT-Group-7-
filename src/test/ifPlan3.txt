@@ -1,0 +1,11 @@
+    opponentLoc = 45
+
+    if (opponentLoc / 10 - 1)
+    then
+      if (opponentLoc % 10 - 5) then move downleft
+      else if (opponentLoc % 10 - 4) then move down
+      else if (opponentLoc % 10 - 3) then move downright
+      else if (opponentLoc % 10 - 2) then move upright
+      else if (opponentLoc % 10 - 1) then move up
+      else move upleft
+    else {}
