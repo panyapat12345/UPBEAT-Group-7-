@@ -58,16 +58,33 @@ public class Action implements Command{
             System.out.println(key);
             // gameSystem.instance().relocate();
         } else if(key.equals("move")){
+            // simulate
+            bindings.put("Budget", bindings.get("Budget")-1);
+
             System.out.println(key + " " + left.toString());
             // gameSystem.instance().move(left.toString());
         } else if(key.equals("invest")){
-            System.out.println(key + " " + right.eval(bindings));
+            int val = right.eval(bindings);
+            // simulate
+            bindings.put("Budget", bindings.get("Budget")-val-1);
+            bindings.put("Deposit", bindings.get("Deposit")+val);
+
+            System.out.println(key + " " + val);
             // gameSystem.instance().invest(right.eval(bindings));
         } else if(key.equals("collect")){
-            System.out.println(key + " " + right.eval(bindings));
+            int val = right.eval(bindings);
+            // simulate
+            bindings.put("Budget", bindings.get("Budget")+val-1);
+            bindings.put("Deposit", bindings.get("Deposit")-val);
+
+            System.out.println(key + " " + val);
             // gameSystem.instance().collect(right.eval(bindings));
         } else if(key.equals("shoot")){
-            System.out.println(key + " " + left.toString() + " " + right.eval((bindings)));
+            int val = right.eval((bindings));
+            // simulate
+            bindings.put("Budget", bindings.get("Budget")-val-1);
+
+            System.out.println(key + " " + left.toString() + " " + val);
             // gameSystem.instance().shoot(left.toString(), right.eval(bindings));
         }
     }

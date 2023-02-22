@@ -1,6 +1,6 @@
 package Exception;
 
-public class DoneExecuteException extends RuntimeException{
+public class DoneExecuteException extends Exception{
     public DoneExecuteException() {
         super();
     }

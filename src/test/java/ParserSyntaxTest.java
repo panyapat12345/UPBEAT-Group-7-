@@ -1,7 +1,5 @@
 import AST.*;
-import Exception.EvalError;
-import Exception.LexicalError;
-import Exception.SyntaxError;
+import Exception.*;
 import Parser.Parser;
 import Parser.PlanParser;
 import Tokenizer.PlanTokenizer;
@@ -34,8 +32,10 @@ class ParserSyntaxTest {
 
             // doState testing
             Map<String, Integer> binding = new HashMap<>();
-            if(AST != null)
-                AST.doState(binding);
+            try {
+                if(AST != null)
+                    AST.doState(binding);
+            } catch (DoneExecuteException e) { }
             printMap(binding);
         } catch (SyntaxError e) {
 //            System.err.println(e.getMessage() + " : " + src);
@@ -79,8 +79,10 @@ class ParserSyntaxTest {
 
                 // doState testing
                 Map<String, Integer> binding = new HashMap<>();
-                if(AST != null)
-                    AST.doState(binding);
+                try {
+                    if(AST != null)
+                        AST.doState(binding);
+                } catch (DoneExecuteException e) { }
                 printMap(binding);
             } catch(SyntaxError e) {
                 System.err.println(e.getMessage());
@@ -96,7 +98,7 @@ class ParserSyntaxTest {
     }
 
     @Test
-    void caseOne() {
+    void eachLineConfigurationFileTest() {
         parseTest("budget=10000");
         parseTest("m=20");
         parseTest("n=15");
@@ -112,7 +114,7 @@ class ParserSyntaxTest {
     }
 
     @Test
-    void caseTwo() {
+    void eachLineSubExamplePlanTest() {
         parseTest("t = t + 1");
         parseTest("m = 0");
 //        parseTest("deposit");
@@ -170,7 +172,7 @@ class ParserSyntaxTest {
     }
 
     @Test
-    void stateOne() {
+    void configurationFileWithOutCommentTest() {
         StringBuilder s = new StringBuilder();
         s.append("m=20 ");
         s.append("n=15 ");
@@ -187,7 +189,7 @@ class ParserSyntaxTest {
     }
 
     @Test
-    void stateTwo() {
+    void subExamplePlanTest() {
         StringBuilder s = new StringBuilder();
         s.append("t = t + 1 ");
         s.append("m = 0 ");
@@ -225,22 +227,31 @@ class ParserSyntaxTest {
 
     @Test
     void planIfTest() {
-        // readFileTest("src/test/Plan1.txt", "src/test/parseTestResult.txt");
-        // readFileTest("src/test/ifPlan1.txt", "src/test/ifParseTestResult1.txt");
-        // readFileTest("src/test/ifPlan2.txt", "src/test/ifParseTestResult2.txt");
-        // readFileTest("src/test/ifPlan3.txt", "src/test/ifParseTestResult3.txt");
-        // readFileTest("src/test/ifPlan4.txt", "src/test/ifParseTestResult4.txt");
-        // readFileTest("src/test/ifPlan5.txt", "src/test/ifParseTestResult5.txt");
-        // readFileTest("src/test/ifPlan6.txt", "src/test/ifParseTestResult6.txt");
+        // readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan1.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult1.txt");
+        // readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan2.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult2.txt");
+        // readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan3.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult3.txt");
+        // readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan4.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult4.txt");
+        // readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan5.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult5.txt");
+        // readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan6.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult6.txt");
     }
 
     @Test
     void planWhileTest() {
-//        readFileTest("src/test/whilePlan1.txt", "src/test/whileParseTestResult1.txt");
-//        readFileTest("src/test/whilePlan2.txt", "src/test/whileParseTestResult2.txt");
-//        readFileTest("src/test/whilePlan3.txt", "src/test/whileParseTestResult3.txt");
-//        readFileTest("src/test/whilePlan4.txt", "src/test/whileParseTestResult4.txt");
-//        readFileTest("src/test/whilePlan5.txt", "src/test/whileParseTestResult5.txt");
-        readFileTest("src/test/whilePlan6.txt", "src/test/whileParseTestResult6.txt");
+        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan1.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult1.txt");
+        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan2.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult2.txt");
+        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan3.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult3.txt");
+        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan4.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult4.txt");
+        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan5.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult5.txt");
+//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan6.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult6.txt");
+//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan7.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult7.txt");
+//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan8.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult8.txt");
+//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan9.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult9.txt");
+//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan10.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult10.txt");
+//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whileFinalPlan.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileFinalParseTestResult6.txt");
+    }
+
+    @Test
+    void planTest() {
+        readFileTest("src/test/AllPlanTestFiles/PlanTestFiles/examplePlan.txt", "src/test/AllPlanTestFiles/PlanTestFiles/parseTestResult.txt");
     }
 }

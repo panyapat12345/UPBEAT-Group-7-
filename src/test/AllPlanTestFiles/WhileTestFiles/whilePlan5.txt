@@ -1,5 +1,6 @@
 m = 0
 i = 10
+Budget = 50
 
 while (i) {
     Random = 100 + 101*i^4
