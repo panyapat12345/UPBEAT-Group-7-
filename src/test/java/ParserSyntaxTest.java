@@ -236,6 +236,11 @@ class ParserSyntaxTest {
 
     @Test
     void planWhileTest() {
-        readFileTest("src/test/whilePlan1.txt", "src/test/whileParseTestResult1.txt");
+//        readFileTest("src/test/whilePlan1.txt", "src/test/whileParseTestResult1.txt");
+//        readFileTest("src/test/whilePlan2.txt", "src/test/whileParseTestResult2.txt");
+//        readFileTest("src/test/whilePlan3.txt", "src/test/whileParseTestResult3.txt");
+//        readFileTest("src/test/whilePlan4.txt", "src/test/whileParseTestResult4.txt");
+//        readFileTest("src/test/whilePlan5.txt", "src/test/whileParseTestResult5.txt");
+        readFileTest("src/test/whilePlan6.txt", "src/test/whileParseTestResult6.txt");
     }
 }

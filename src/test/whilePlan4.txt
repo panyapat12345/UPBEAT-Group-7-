@@ -1,0 +1,7 @@
+i = 500
+counter = 1000
+
+while (i) {
+    i = i - 1
+    counter = counter - 1
+}

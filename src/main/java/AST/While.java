@@ -26,9 +26,11 @@ public class While implements ConState{
         s.append("} \n");
     }
 
-    public void doState(Map<String, Integer> bindings) {
+    public void doState(Map<String, Integer> bindings) throws DoneExecuteException{
         for(int counter = 0; counter < 10000 && checkCon(bindings); counter++){
             trueState.doState(bindings);
+            // check # loops
+//            System.err.println("Counter : " + (counter+1));
         }
     }
 

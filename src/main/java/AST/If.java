@@ -34,7 +34,7 @@ public class If implements ConState{
         s.append("} \n");
     }
 
-    public void doState(Map<String, Integer> bindings) {
+    public void doState(Map<String, Integer> bindings) throws DoneExecuteException{
         if(checkCon(bindings)){
             if (trueState != null)
                 trueState.doState(bindings);

@@ -49,10 +49,11 @@ public class Action implements Command{
         }
     }
 
-    public void doState(Map<String, Integer> bindings) {
+    public void doState(Map<String, Integer> bindings) throws DoneExecuteException{
         if(key.equals("done")){
             System.out.println(key);
             // gameSystem.instance().done();
+            throw new DoneExecuteException("Done");
         } else if(key.equals("relocate")){
             System.out.println(key);
             // gameSystem.instance().relocate();

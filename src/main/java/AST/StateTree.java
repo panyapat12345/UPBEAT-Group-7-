@@ -20,7 +20,7 @@ public class StateTree implements State{
             next.prettyPrint(s);
     }
 
-    public void doState(Map<String, Integer> bindings) {
+    public void doState(Map<String, Integer> bindings) throws DoneExecuteException{
         data.doState(bindings);
         if(next != null)
             next.doState(bindings);

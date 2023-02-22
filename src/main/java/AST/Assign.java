@@ -1,5 +1,6 @@
 package AST;
 import java.util.Map;
+import Exception.*;
 
 public class Assign implements Command{
     private Identifier left;
@@ -16,7 +17,7 @@ public class Assign implements Command{
         right.prettyPrint(s);
     }
 
-    public void doState(Map<String, Integer> bindings) {
+    public void doState(Map<String, Integer> bindings) throws DoneExecuteException {
         bindings.put(left.toString(), right.eval(bindings));
     }
 }
