@@ -1,6 +1,8 @@
 package GameProcess;
 import AST.Action;
 
+import java.util.HashMap;
+
 interface PlayerInterface{
     void ChangeConstructionPlan(Action newPlan);
     void IsDefeat();
@@ -9,7 +11,8 @@ interface PlayerInterface{
 
 class Player implements PlayerInterface{
     private int PlayerIndex;
-    private Action ConstructionPlan = null;
+    private Action ConstructionPlan;
+    private HashMap<String, Double> VariablesOfConstructionPlan;
     private int CityCenterPositionM;
     private int CityCenterPositionN;
     CityCrew crew = null;
@@ -17,12 +20,10 @@ class Player implements PlayerInterface{
     Player(int Id, Action constructionPlan){
         PlayerIndex = Id;
         ConstructionPlan = constructionPlan;
+        VariablesOfConstructionPlan = new HashMap<>();
     }
 
-    public void ChangeConstructionPlan(Action newPlan){
-        this.ConstructionPlan = newPlan;
-    }
-
+    public void ChangeConstructionPlan(Action newPlan){ this.ConstructionPlan = newPlan; }
     @Override
     public void IsDefeat() {
 
