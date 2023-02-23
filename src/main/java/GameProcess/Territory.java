@@ -2,68 +2,99 @@ package GameProcess;
 
 import java.util.HashMap;
 
-interface TerritoryInterface{
-    Region GetCurrentRegionInfo(int m, int n);
+interface territoryInterface {
+    region getcurrentregioninfo(int m, int n);
+    void attackRegion(player player, region Target);
+    void move(cityCrew cityCrew, int direction);
+    void invest(player player, region region);
+    void collect(player player, region region);
+    void shoot(player player, int direction, region region);
+    void relocate(region From, region To);
+    int opponent(region currentRegion);
+    int nearby(cityCrew cityCrew);
 }
 
-class Territory {
+interface RegionInterface{
+
+}
+
+class Territory implements territoryInterface {
     private int m;
     private int n;
-    private Region[][] Regions = null;
+    private region[][] regions = null;
 
     Territory(HashMap<String, Double> Variables) {
         this.m = Variables.get("m").intValue();
         this.n = Variables.get("n").intValue();
-        Regions = new Region[m][n];
+        regions = new region[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                Regions[i][j] = new Region(Variables.get("max_dep"), Variables.get("interest_pct"));
+                regions[i][j] = new region(m, n, Variables.get("max_dep"), Variables.get("interest_pct"));
             }
         }
     }
 
-    public PeekRegion GetInfoOfRegion(int M, int N) {
-        if ((M >= 0 && N >= 0) && (M < m && N < n)) return Regions[M][N].GetInfo();
-        else return new PeekRegion(-1, 0.0, 0.0, 0.0, "null");
+    public peekRegion getInfoOfRegion(int M, int N) {
+        if ((M >= 0 && N >= 0) && (M < m && N < n)) return regions[M][N].GetInfo();
+        else return new peekRegion(-1, 0.0, 0.0, 0.0, "null", -1, -1);
     }
 
-    public int opponent(int PlayerIndex, int CurrentM, int CurrentN) {
+    public int opponent(cityCrew cityCrew) {
+        peekCiryCrew crew = cityCrew.getCityCrewInfo();
+        int crewOf = crew.crewOfPlayer;
+        int CurrentM = crew.positionM;
+        int CurrentN = crew.positionN;
         return 0;
+    }
+    public void shoot(player player, int direction){
+        peekCiryCrew crew = player.getCityCrewInfo();
+        peekRegion peekRegion = getInfoOfRegion(crew.positionM, crew.positionM);
+        regions[peekRegion.PositionM][peekRegion.PositionN].beAttack(crew.budGet);
     }
 }
 
-class Region {
+class region {
     private int PlayerOwnerIndex;
     private Double Deposit;
     private Double MaxDeposit;
     private Double InterestRate;
     private String Type;
+    private int PositionM;
+    private int PositionN;
 
     public int GetOwner() { return PlayerOwnerIndex; }
+    public int invest(player player, double Amount) { return 0; }
     public int deposit() { return Deposit.intValue(); }
-    public int interest() { return (int)(Deposit * InterestRate / 100.0); }
+    public int interest(player player, double Amount) { return (int)(Deposit * InterestRate / 100.0); }
+    public int beAttack(Double Amount) { return 0; }
 
-    Region(Double MaxDeposit, Double InterestRate) {
+    region(int M, int N, Double MaxDeposit, Double InterestRate) {
+        this.PositionM = M;
+        this.PositionN = N;
         this.PlayerOwnerIndex = -1;
         this.MaxDeposit = MaxDeposit;
         this.InterestRate = InterestRate;
         this.Type = "Empty";
     }
 
-    public PeekRegion GetInfo() { return new PeekRegion(PlayerOwnerIndex, Deposit, MaxDeposit, InterestRate, Type); }
+    public peekRegion GetInfo() { return new peekRegion(PlayerOwnerIndex, Deposit, MaxDeposit, InterestRate, Type, PositionM, PositionN); }
 }
 
-class PeekRegion {
+class peekRegion {
     public int PlayerOwnerIndex;
     public Double Deposit;
     public Double MaxDeposit;
     public Double InterestRate;
     public String Type;
-    PeekRegion(int PlayerOwnerIndex, Double Deposit, Double MaxDeposit, Double InterestRate, String Type){
+    public int PositionM;
+    public int PositionN;
+    peekRegion(int PlayerOwnerIndex, Double Deposit, Double MaxDeposit, Double InterestRate, String Type, int M, int N){
         this.PlayerOwnerIndex = PlayerOwnerIndex;
         this.Deposit = Deposit;
         this.MaxDeposit = MaxDeposit;
         this.InterestRate = InterestRate;
         this.Type = Type;
+        this.PositionM = M;
+        this.PositionN = N;
     }
 }
