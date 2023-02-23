@@ -26,6 +26,11 @@ public class InfoExpr implements Expr{
     }
 
     public int eval(Map<String, Integer> bindings) {
+        if(key.equals("opponent")){
+            // GameSystem.instance().opponent();
+        } else {
+            // GameSystem.instance().nearby();
+        }
         return 0;
     }
 

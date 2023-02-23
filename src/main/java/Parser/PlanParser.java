@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 public class PlanParser implements Parser{
     private Tokenizer tkz;
     private final String[] possibleActionKeys = {"done", "relocate", "move", "invest", "collect", "shoot"};
-    private final String[] specialWords = {"Rows", "cols", "currow", "curcol", "budget", "deposit", "int", "maxdeposit", "random"};
+    private final String[] specialWords = {"rows", "cols", "currow", "curcol", "budget", "deposit", "int", "maxdeposit", "random"};
 //    private final String[] ArithOp = {'+', '-', '*', '/', '%', '(', ')', '^'};
 
     public PlanParser(Tokenizer tkz) {
