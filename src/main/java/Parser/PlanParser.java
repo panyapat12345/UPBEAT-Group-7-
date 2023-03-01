@@ -171,8 +171,16 @@ public class PlanParser implements Parser{
             tkz.consume(")");
             tkz.consume("then");
             State trueState = (State) parseState();
+            // add
+            if(!(trueState instanceof StateTree) && trueState != null)
+                trueState = new StateTree(trueState, null);
+
             tkz.consume("else");
             State falseState = (State) parseState();
+            //add
+            if(!(falseState instanceof StateTree) && falseState != null)
+                falseState = new StateTree(falseState, null);
+
             return new If(expr, trueState, falseState);
         } catch (IllegalIfException e) {
             throw new SyntaxError("Illegal If : " + e.getMessage());
@@ -186,6 +194,10 @@ public class PlanParser implements Parser{
             Expr expr = parseE();
             tkz.consume(")");
             State trueState = (State) parseState();
+            // add
+            if(!(trueState instanceof StateTree) && trueState != null)
+                trueState = new StateTree(trueState, null);
+
             return new While(expr, trueState);
         } catch(IllegalWhileException e) {
             throw new SyntaxError("Illegal While : " + e.getMessage());

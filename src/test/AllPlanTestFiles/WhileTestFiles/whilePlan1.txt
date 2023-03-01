@@ -2,6 +2,7 @@ i = 10
 counter = 0
 
 while (i) {
+    invest i*i
     i = i - 1
     counter = counter + 1
 }

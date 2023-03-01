@@ -92,7 +92,14 @@ Action implements Command{
     }
 
     public FinalActionState getFinalAction(Map<String, Integer> bindings){
-        return new FinalActionState(key, left.toString(), right.eval(bindings));
+        if(left != null && right != null)
+            return new FinalActionState(key, left.toString(), right.eval(bindings));
+        else if(left != null && right == null)
+            return new FinalActionState(key, left.toString(), -999);
+        else if(left == null && right != null)
+            return new FinalActionState(key, null, right.eval(bindings));
+        else
+            return new FinalActionState(key, null, -999);
     }
 
     public class FinalActionState {
@@ -107,7 +114,19 @@ Action implements Command{
 
         @Override
         public String toString() {
-            return key + " " + dir + " " + val;
+            if(key.equals("done")){
+                return key;
+            } else  if(key.equals("relocate")){
+                return key;
+            } else  if(key.equals("move")){
+                return key + " " + dir;
+            } else  if(key.equals("invest")){
+                return key + " " + val;
+            } else  if(key.equals("collect")){
+                return key + " " + val;
+            } else {   // "shoot"
+                return key + " " + dir + " " + val;
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
-   Deposit = 100
-   Budget = 100
+   Deposit = 50
+   Budget = 10
 
     if (Deposit - 100)
     then collect (Deposit / 4)

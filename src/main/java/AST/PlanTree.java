@@ -41,21 +41,26 @@ public class PlanTree implements Tree{
             if(stack == null){
                 stack = new Stack<>();
                 StateTree current = (StateTree) root;
-                downCompute(current);
+                if(current != null)
+                    downCompute(current);
 
             } else {
-                StateTree current = (StateTree) stack.pop();
-                State data = current.data();
-                if(data instanceof Action action){
-                    if(current.hasNextState()){
-                        current = (StateTree) current.nextState();
-                        downCompute(current);
-                    } else {
-                        current = upCompute(current);
-                        if(current != null){
+                if(!stack.isEmpty()){
+                    StateTree current = (StateTree) stack.pop();
+                    State data = current.data();
+                    if(data instanceof Action action){
+                        if(current.hasNextState()){
+                            current = (StateTree) current.nextState();
                             downCompute(current);
+                        } else {
+                            current = upCompute();
+                            if(current != null){
+                                downCompute(current);
+                            }
                         }
                     }
+                } else {
+                    next = null;
                 }
             }
         }
@@ -70,9 +75,10 @@ public class PlanTree implements Tree{
 
                 } else if(data instanceof Assign assign){
                     assign.doState(bindings);
-                    current = upCompute(current);
+                    current = downAndUpCompute(current);
 
                 } else if(data instanceof If If){
+                    stack.push(current);
                     current = (StateTree) If.nextState(bindings);
 
                 } else {
@@ -81,8 +87,16 @@ public class PlanTree implements Tree{
                         stack.push(current);
                         current = (StateTree) While.nextState(bindings);
                     } else {
-                        current = upCompute(current);
+                        // While.clearCounter();
+                        current = downAndUpCompute(current);
                     }
+                }
+
+                if(current == null){
+                    if(stack.isEmpty())
+                        return null;
+                    else
+                        current = upCompute();
                 }
 
                 if(current == null)
@@ -90,23 +104,33 @@ public class PlanTree implements Tree{
             }
         }
 
-        private StateTree upCompute(StateTree current){
+        private StateTree downAndUpCompute(StateTree current){
             if(current.hasNextState())
                 return  (StateTree) current.nextState();
             else {
-                while(!stack.isEmpty()){
-                    current = (StateTree) stack.pop();
-                    While While = (While) current.data();
+                return upCompute();
+            }
+        }
+
+        private StateTree upCompute(){
+            while(!stack.isEmpty()){
+                StateTree current = (StateTree) stack.pop();
+                State data = current.data();
+                if(data instanceof While While){
                     if(While.checkCon(bindings)){
                         stack.push(current);
                         return (StateTree) While.nextState(bindings);
                     } else {
                         While.clearCounter();
                     }
+                } else {    // If
+                    if(current.hasNextState()){
+                        return (StateTree) current.nextState();
+                    }
                 }
-                next = null;
-                return null;
             }
+            next = null;
+            return null;
         }
 
         public boolean hasNext() {

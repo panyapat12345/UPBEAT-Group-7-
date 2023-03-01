@@ -2,6 +2,7 @@ i = 500
 counter = 1000
 
 while (i) {
+    invest counter
     i = i - 1
     counter = counter - 1
 }

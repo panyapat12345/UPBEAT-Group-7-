@@ -1,0 +1,14 @@
+i = 10
+if(i)
+then i = i + 5
+else i = i - 5
+
+j = 0-10
+if(j)
+then j = j + 5
+else j = j - 5
+
+k = 0
+if(k)
+then k = 10
+else k = 0-10
