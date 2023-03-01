@@ -17,7 +17,7 @@ public class Assign implements Command{
         right.prettyPrint(s);
     }
 
-    public void doState(Map<String, Integer> bindings) throws DoneExecuteException {
+    public void doState(Map<String, Integer> bindings) {
         bindings.put(left.toString(), right.eval(bindings));
     }
 }

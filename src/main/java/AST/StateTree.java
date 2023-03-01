@@ -1,6 +1,7 @@
 package AST;
 import Exception.*;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class StateTree implements State{
     private  State data, next;
@@ -28,5 +29,28 @@ public class StateTree implements State{
 
     public void setNext(State next){
         this.next = next;
+    }
+
+    public boolean hasNextState(){
+        return next != null;
+    }
+
+    public State nextState(){
+        if(hasNextState())
+            return next;
+        throw new NoSuchElementException("null next state");
+    }
+
+    public Action.FinalActionState doData(Map<String, Integer> bindings){
+        if (data instanceof Action action){
+            return action.getFinalAction(bindings);
+        } else if (data instanceof Assign assign){
+            assign.doState(bindings);
+        }
+        return null;
+    }
+
+    public State data() {
+        return data;
     }
 }

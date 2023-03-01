@@ -47,4 +47,11 @@ public class If implements ConState{
     public boolean checkCon(Map<String, Integer> bindings) {
         return expr.eval(bindings) > 0;
     }
+
+    public State nextState(Map<String, Integer> bindings) {
+        if(checkCon(bindings))
+            return trueState;
+        else
+            return falseState;
+    }
 }

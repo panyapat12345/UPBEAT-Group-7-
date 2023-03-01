@@ -2,7 +2,9 @@ package AST;
 import Exception.*;
 import java.util.Map;
 
-public class Action implements Command{
+public class
+
+Action implements Command{
     private String key;
     private String[] possibleKeys = {"done", "relocate", "move", "invest", "collect", "shoot"};
     private Dir left;
@@ -86,6 +88,21 @@ public class Action implements Command{
 
             System.out.println(key + " " + left.toString() + " " + val);
             // gameSystem.instance().shoot(left.toString(), right.eval(bindings));
+        }
+    }
+
+    public FinalActionState getFinalAction(Map<String, Integer> bindings){
+        return new FinalActionState(key, left.toString(), right.eval(bindings));
+    }
+
+    public class FinalActionState {
+        private final String key, dir;
+        private final int val;
+
+        public FinalActionState(String key, String dir, int val){
+            this.key = key;
+            this.dir = dir;
+            this.val = val;
         }
     }
 }
