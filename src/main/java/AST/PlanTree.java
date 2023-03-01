@@ -33,12 +33,80 @@ public class PlanTree implements Tree{
         private Action.FinalActionState next;
 
         public planTreeIterator() {
-            stack = new Stack<>();
             computeNext();
         }
 
         private void computeNext() {
+            // first call
+            if(stack == null){
+                stack = new Stack<>();
+                StateTree current = (StateTree) root;
+                downCompute(current);
 
+            } else {
+                StateTree current = (StateTree) stack.pop();
+                State data = current.data();
+                if(data instanceof Action action){
+                    if(current.hasNextState()){
+                        current = (StateTree) current.nextState();
+                        downCompute(current);
+                    } else {
+                        current = upCompute(current);
+                        if(current != null){
+                            downCompute(current);
+                        }
+                    }
+                }
+            }
+        }
+
+        private StateTree downCompute(StateTree current){
+            while(true){
+                State data = current.data();
+                if(data instanceof Action action){
+                    stack.push(current);
+                    next = ((Action) data).getFinalAction(bindings);
+                    return current;
+
+                } else if(data instanceof Assign assign){
+                    assign.doState(bindings);
+                    current = upCompute(current);
+
+                } else if(data instanceof If If){
+                    current = (StateTree) If.nextState(bindings);
+
+                } else {
+                    While While = (While) data;
+                    if(While.checkCon(bindings)){
+                        stack.push(current);
+                        current = (StateTree) While.nextState(bindings);
+                    } else {
+                        current = upCompute(current);
+                    }
+                }
+
+                if(current == null)
+                    return null;
+            }
+        }
+
+        private StateTree upCompute(StateTree current){
+            if(current.hasNextState())
+                return  (StateTree) current.nextState();
+            else {
+                while(!stack.isEmpty()){
+                    current = (StateTree) stack.pop();
+                    While While = (While) current.data();
+                    if(While.checkCon(bindings)){
+                        stack.push(current);
+                        return (StateTree) While.nextState(bindings);
+                    } else {
+                        While.clearCounter();
+                    }
+                }
+                next = null;
+                return null;
+            }
         }
 
         public boolean hasNext() {
@@ -46,8 +114,11 @@ public class PlanTree implements Tree{
         }
 
         public Action.FinalActionState next() {
-            if(hasNext())
-                return next;
+            if(hasNext()){
+                Action.FinalActionState result = next;
+                computeNext();
+                return result;
+            }
             throw new NoSuchElementException("null next");
         }
     }

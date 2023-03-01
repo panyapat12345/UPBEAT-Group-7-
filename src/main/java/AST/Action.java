@@ -104,5 +104,10 @@ Action implements Command{
             this.dir = dir;
             this.val = val;
         }
+
+        @Override
+        public String toString() {
+            return key + " " + dir + " " + val;
+        }
     }
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 public class While implements ConState{
     private Expr expr;
     private State trueState;
+    private int countLoop = 0;
 
     public While(Expr expr, State trueState) {
         if(expr == null)
@@ -39,9 +40,15 @@ public class While implements ConState{
     }
 
     public State nextState(Map<String, Integer> bindings) {
-        if(checkCon(bindings))
-            return trueState;
-        else
-            return null;
+        if(countLoop < 10000){
+            countLoop++;
+            if(checkCon(bindings))
+                return trueState;
+        }
+        return null;
+    }
+
+    public void clearCounter(){
+        countLoop = 0;
     }
 }
