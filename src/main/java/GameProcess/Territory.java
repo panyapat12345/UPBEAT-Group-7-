@@ -51,6 +51,51 @@ class Territory implements territoryInterface {
         peekRegion peekRegion = getInfoOfRegion(crew.positionM, crew.positionM);
         regions[peekRegion.PositionM][peekRegion.PositionN].beAttack(crew.budGet);
     }
+
+    @Override
+    public region getcurrentregioninfo(int m, int n) {
+        return null;
+    }
+
+    @Override
+    public void attackRegion(player player, region Target) {
+
+    }
+
+    @Override
+    public void move(cityCrew cityCrew, int direction) {
+
+    }
+
+    @Override
+    public void invest(player player, region region) {
+
+    }
+
+    @Override
+    public void collect(player player, region region) {
+
+    }
+
+    @Override
+    public void shoot(player player, int direction, region region) {
+
+    }
+
+    @Override
+    public void relocate(region From, region To) {
+
+    }
+
+    @Override
+    public int opponent(region currentRegion) {
+        return 0;
+    }
+
+    @Override
+    public int nearby(cityCrew cityCrew) {
+        return 0;
+    }
 }
 
 class region {
