@@ -1,4 +1,4 @@
-      Random = 96
+      Random = 99
 
       dir = Random % 6
       if (dir - 4) then move upleft

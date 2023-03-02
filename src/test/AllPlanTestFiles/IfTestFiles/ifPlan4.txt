@@ -1,5 +1,5 @@
-      Budget = 1000000
-      opponentLoc = 14
+      Budget = 1000001
+      opponentLoc = 11
 
       nearbyUpleft = 101
       nearbyDownleft = 102

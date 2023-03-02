@@ -6,3 +6,5 @@ while (i) {
     i = i - 1
     counter = counter + 1
 }
+collect counter
+done

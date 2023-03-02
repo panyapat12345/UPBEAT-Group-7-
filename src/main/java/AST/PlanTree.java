@@ -122,6 +122,8 @@ public class PlanTree implements Tree{
                         return (StateTree) While.nextState(bindings);
                     } else {
                         While.clearCounter();
+                        if(current.hasNextState())
+                            return (StateTree) current.nextState();
                     }
                 } else {    // If
                     if(current.hasNextState()){
@@ -140,7 +142,15 @@ public class PlanTree implements Tree{
         public Action.FinalActionState next() {
             if(hasNext()){
                 Action.FinalActionState result = next;
-                computeNext();
+                // old code
+//                computeNext();
+
+                // done is last action only
+                if(next.equals("done"))
+                    next = null;
+                else
+                    computeNext();
+
                 return result;
             }
             throw new NoSuchElementException("null next");

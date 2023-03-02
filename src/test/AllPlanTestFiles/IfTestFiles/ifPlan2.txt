@@ -1,8 +1,10 @@
    Deposit = 50
-   Budget = 10
+   Budget = 25
 
     if (Deposit - 100)
     then collect (Deposit / 4)
     else if (Budget - 25) then invest 25
     else {}
     if (Budget - 100) then {} else done
+
+    relocate

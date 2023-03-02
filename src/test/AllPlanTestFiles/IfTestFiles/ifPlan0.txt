@@ -1,14 +1,17 @@
-i = 10
-if(i)
+i = 15
+if(i-10)
 then i = i + 5
 else i = i - 5
+invest i
 
 j = 0-10
 if(j)
 then j = j + 5
 else j = j - 5
+collect j
 
 k = 0
 if(k)
 then k = 10
 else k = 0-10
+shoot up k

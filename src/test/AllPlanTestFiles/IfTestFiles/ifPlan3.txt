@@ -1,4 +1,4 @@
-    opponentLoc = 45
+    opponentLoc = 16
 
     if (opponentLoc / 10 - 1)
     then

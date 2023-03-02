@@ -1,8 +1,13 @@
 i = 500
-counter = 1000
+counter = 10000
 
 while (i) {
-    invest counter
     i = i - 1
-    counter = counter - 1
+    j = 5
+
+    while(j){
+        j = j - 1
+        counter = counter - 1
+    }
 }
+invest counter

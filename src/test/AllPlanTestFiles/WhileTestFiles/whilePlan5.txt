@@ -1,6 +1,6 @@
 m = 0
 i = 10
-Budget = 50
+Budget = 25
 
 while (i) {
     Random = 100 + 101*i^4
@@ -16,3 +16,7 @@ while (i) {
 
     i = i - 1
 }
+
+if(Budget-50)
+then relocate
+else done

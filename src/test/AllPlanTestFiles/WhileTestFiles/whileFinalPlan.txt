@@ -13,10 +13,16 @@ nearbyUp = 106
 
 while (Deposit) {
     if (Deposit - 100)
-    then collect (Deposit / 4)
-    else if (Budget - 25)
-    then invest 25
-    else {}
+    then {
+        collect (Deposit / 4)
+        Deposit = Deposit - Deposit / 4
+        Budget = Budget + Deposit / 4 - 1
+    } else if (Budget - 25)
+    then {
+        invest 25
+        Deposit = Deposit + 25
+        Budget = Budget - 25 -1
+    } else {}
     if (Budget - 100) then {} else done
 
     opponentLoc = 45

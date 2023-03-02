@@ -36,16 +36,19 @@ public class While implements ConState{
     }
 
     public boolean checkCon(Map<String, Integer> bindings) {
-        return expr.eval(bindings) > 0;
+        if(countLoop < 10000)
+            return expr.eval(bindings) > 0;
+        return false;
     }
 
     public State nextState(Map<String, Integer> bindings) {
+        State result = null;
         if(countLoop < 10000){
-            countLoop++;
             if(checkCon(bindings))
-                return trueState;
+                result = trueState;
+            countLoop++;
         }
-        return null;
+        return result;
     }
 
     public void clearCounter(){
