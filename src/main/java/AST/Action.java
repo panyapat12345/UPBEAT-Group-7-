@@ -112,6 +112,18 @@ Action implements Command{
             this.val = val;
         }
 
+        public String getAction(){
+            return key;
+        }
+
+        public String getDirection(){
+            return dir;
+        }
+
+        public int getValue(){
+            return val;
+        }
+
         @Override
         public String toString() {
             if(key.equals("done")){

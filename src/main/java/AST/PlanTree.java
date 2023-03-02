@@ -3,6 +3,15 @@ import Parser.*;
 import Tokenizer.*;
 import Exception.*;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class PlanTree implements Tree{
@@ -10,8 +19,40 @@ public class PlanTree implements Tree{
     private Map<String, Integer> bindings = new HashMap<>();;
 
     public PlanTree(String s) throws SyntaxError{
+        init(s);
+    }
+
+    public PlanTree(Path path) throws SyntaxError{
+        StringBuilder s = readFromFile(path);
+        init(s.toString());
+    }
+
+    private void init(String s) throws SyntaxError{
         Parser p = new PlanParser(new PlanTokenizer(s));
         root = p.parse();
+    }
+
+    private StringBuilder readFromFile(Path path){
+        if(path == null)
+            return new StringBuilder();
+
+        Charset charset = StandardCharsets.UTF_8;
+        try (BufferedReader reader = Files.newBufferedReader(path, charset)) {
+            StringBuilder s = new StringBuilder();
+            String line = null;
+
+            while((line = reader.readLine()) != null) {
+                s.append(line);
+                s.append(" ");
+            }
+            return s;
+        } catch (NoSuchFileException | AccessDeniedException | FileNotFoundException e) {
+            System.err.println("File not found.");
+            return new StringBuilder();
+        } catch (IOException e) {
+            System.err.println("IOExcertion: " + e);
+            return new StringBuilder();
+        }
     }
 
     public boolean changePlan(String s){
@@ -22,6 +63,11 @@ public class PlanTree implements Tree{
         } catch(SyntaxError e){
             return false;
         }
+    }
+
+    public boolean changePlan(Path path){
+        StringBuilder s = readFromFile(path);
+        return changePlan(s.toString());
     }
 
     public Iterator<Action.FinalActionState> iterator() {
@@ -146,7 +192,7 @@ public class PlanTree implements Tree{
 //                computeNext();
 
                 // done is last action only
-                if(next.equals("done"))
+                if(next.getAction().equals("done"))
                     next = null;
                 else
                     computeNext();
