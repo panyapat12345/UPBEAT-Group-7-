@@ -48,13 +48,13 @@ class internalOperator implements internalOperatorInterface {
     @Override
     public int deposit() {
         peekCiryCrew crew = currentPlayer().getCityCrewInfo();
-        return territory.getcurrentregioninfo(crew.positionM, crew.positionN).GetInfo().Deposit.intValue();
+        return territory.getCurrentRegionInfo(crew.positionM, crew.positionN).Deposit.intValue();
     }
 
     @Override
     public int interest() {
         peekCiryCrew crew = currentPlayer().getCityCrewInfo();
-        return territory.getcurrentregioninfo(crew.positionM, crew.positionN).GetInfo().InterestRate.intValue();
+        return territory.getCurrentRegionInfo(crew.positionM, crew.positionN).InterestRate.intValue();
     }
 
     @Override
@@ -64,14 +64,96 @@ class internalOperator implements internalOperatorInterface {
 
     public int random() { return ThreadLocalRandom.current().nextInt(0, 999); }
 
-    @Override
-    public int opponent() {
-        return 0;
+    private boolean isRegionOfOpponent(int m, int n){
+        int currentPlayer = turn%totalPlayers;
+        peekRegion peek = territory.getInfoOfRegion(m, n);
+
+        if(peek.Type.equals("null"));
+        else if(peek.PlayerOwnerIndex == -1);
+        else if(peek.PlayerOwnerIndex != currentPlayer) return true;
+
+        return false;
     }
 
     @Override
-    public int nearby() {
-        return 0;
+    public int opponent() {
+        int currentM = currentPlayer().getCityCrewInfo().positionM;
+        int currentN = currentPlayer().getCityCrewInfo().positionM;
+        int nearestRegion = 0;
+        int distance = Integer.MAX_VALUE;
+
+        int interestM;
+        int interestN;
+        for(int i = 1; i <= 6; i++){
+            interestM = currentM;
+            interestN = currentN;
+            for(int j = 0; true; j++){
+                switch (i){
+                    case (1) -> interestM++;
+                    case (2) -> {
+                        interestN++;
+                        interestM-=interestN%2;
+                    }
+                    case (3) -> {
+                        interestN++;
+                        interestM+=interestN%2;
+                    }
+                    case (4) -> interestM--;
+                    case (5) -> {
+                        interestN--;
+                        interestM+=interestN%2;
+                    }
+                    case (6) -> {
+                        interestN--;
+                        interestM-=interestN%2;
+                    }
+                }
+                if(!territory.isInBound(interestM, interestN)) break;
+                else if(isRegionOfOpponent(interestM, interestN)) {
+                    if(j < distance) {
+                        distance = j;
+                        nearestRegion = (10*distance)+i;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return nearestRegion;
+    }
+
+    @Override
+    public int nearby(int direction) {
+        int interestM = currentPlayer().getCityCrewInfo().positionM;
+        int interestN = currentPlayer().getCityCrewInfo().positionM;
+        int returnValue = 0;
+        for(int i = 0; true; i++){
+            switch (direction){
+                case (1) -> interestM++;
+                case (2) -> {
+                    interestN++;
+                    interestM-=interestN%2;
+                }
+                case (3) -> {
+                    interestN++;
+                    interestM+=interestN%2;
+                }
+                case (4) -> interestM--;
+                case (5) -> {
+                    interestN--;
+                    interestM+=interestN%2;
+                }
+                case (6) -> {
+                    interestN--;
+                    interestM-=interestN%2;
+                }
+            }
+            if(!territory.isInBound(interestM, interestN)) break;
+            else if(isRegionOfOpponent(interestM, interestN)) {
+                returnValue = (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).Deposit)));
+            }
+        }
+        return returnValue;
     }
 
     public void NextTurn(){

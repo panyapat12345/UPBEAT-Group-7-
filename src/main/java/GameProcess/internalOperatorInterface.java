@@ -11,6 +11,7 @@ interface internalOperatorInterface {
     int maxDeposit();
     int random();
     int opponent();
-    int nearby();
+    int nearby(int direction);
+
     player currentPlayer();
 }

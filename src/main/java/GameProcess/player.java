@@ -44,7 +44,7 @@ class player implements playerInterface, territoryInterface {
     }
 
     @Override
-    public region getcurrentregioninfo(int m, int n) {
+    public peekRegion getCurrentRegionInfo(int m, int n) {
         return null;
     }
 

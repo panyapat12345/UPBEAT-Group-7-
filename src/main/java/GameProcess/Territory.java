@@ -3,7 +3,7 @@ package GameProcess;
 import java.util.HashMap;
 
 interface territoryInterface {
-    region getcurrentregioninfo(int m, int n);
+    peekRegion getCurrentRegionInfo(int m, int n);
     void attackRegion(player player, region Target);
     void move(cityCrew cityCrew, int direction);
     void invest(player player, region region);
@@ -34,8 +34,13 @@ class Territory implements territoryInterface {
         }
     }
 
+    public boolean isInBound(int M, int N) {
+        if ((M >= 0 && N >= 0) && (M < m && N < n)) return true;
+        return false;
+    }
+
     public peekRegion getInfoOfRegion(int M, int N) {
-        if ((M >= 0 && N >= 0) && (M < m && N < n)) return regions[M][N].GetInfo();
+        if(isInBound(M, N)) return regions[M][N].getInfo();
         else return new peekRegion(-1, 0.0, 0.0, 0.0, "null", -1, -1);
     }
 
@@ -53,8 +58,8 @@ class Territory implements territoryInterface {
     }
 
     @Override
-    public region getcurrentregioninfo(int m, int n) {
-        return null;
+    public peekRegion getCurrentRegionInfo(int m, int n) {
+        return regions[m][n].getInfo();
     }
 
     @Override
@@ -122,7 +127,7 @@ class region {
         this.Type = "Empty";
     }
 
-    public peekRegion GetInfo() { return new peekRegion(PlayerOwnerIndex, Deposit, MaxDeposit, InterestRate, Type, PositionM, PositionN); }
+    public peekRegion getInfo() { return new peekRegion(PlayerOwnerIndex, Deposit, MaxDeposit, InterestRate, Type, PositionM, PositionN); }
 }
 
 class peekRegion {
