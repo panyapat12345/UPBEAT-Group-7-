@@ -3,16 +3,15 @@ import Exception.*;
 import java.util.NoSuchElementException;
 
 public class PlanTokenizer implements Tokenizer{
-    private String src, next, oldNext;
-    private int pos, oldPos;
-    private boolean isOldSrc;
+    private String src, next, prevNext;
+    private int pos, prevPos;
     private final char[] oneLengthTokens = {'+', '-', '*', '/', '%', '(', ')', '^', '=', '{', '}'};
 
     public PlanTokenizer(String src) {
         this.src = src;
         pos = 0;
-        isOldSrc = false;
-        computeNext();
+        prevPos = 0;
+        computeNext(true);
     }
 
     private boolean isSpace(char c) {
@@ -27,9 +26,11 @@ public class PlanTokenizer implements Tokenizer{
         return false;
     }
 
-    private void computeNext() {
-        oldPos = pos;
-        oldNext = next;
+    private void computeNext(boolean isFirstCall) {
+        if(isFirstCall){
+            prevPos = pos;
+            prevNext = next;
+        }
 
         StringBuilder s = new StringBuilder();
         while(pos < src.length() && isSpace(src.charAt(pos)))
@@ -55,10 +56,24 @@ public class PlanTokenizer implements Tokenizer{
             for(pos++; pos < src.length() && (Character.isLetter(src.charAt(pos)) || Character.isDigit(src.charAt(pos)) || src.charAt(pos) == '_'); pos++) {
                 s.append(src.charAt(pos));
             }
-        // comment case : ignore line
+        // comment case : ignore path of line from # to \n
         } else if(c == '#') {
+/*
             pos = src.length();
             next = null;
+            return;
+ */
+            for(pos++; pos < src.length() && src.charAt(pos) != '\n'; pos++) { }
+            if(pos == src.length()){
+                next = null;
+            } else {
+                pos++;
+                computeNext(false);
+            }
+            return;
+        } else if(c == '\n') {
+            pos++;
+            computeNext(false);
             return;
         } else throw new LexicalError("unknown character: " + c);
         next = s.toString();
@@ -84,7 +99,7 @@ public class PlanTokenizer implements Tokenizer{
             throw new NoSuchElementException("no more tokens");
         else {
             String result = next;
-            computeNext();
+            computeNext(true);
             return result;
         }
     }
@@ -96,16 +111,7 @@ public class PlanTokenizer implements Tokenizer{
     }
 
     public void back() {
-        pos = oldPos;
-        next = oldNext;
-    }
-    public void setSrc(String src) {
-        StringBuilder s = new StringBuilder();
-        s.append(oldNext);
-        s.append(" ");
-        s.append(src);
-        src = s.toString();
-        pos = oldNext.length();
-        computeNext();
+        pos = prevPos;
+        next = prevNext;
     }
 }

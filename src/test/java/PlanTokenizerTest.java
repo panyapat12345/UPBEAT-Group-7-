@@ -1,6 +1,13 @@
 import Exception.*;
 import Tokenizer.*;
 import org.junit.jupiter.api.Test;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,6 +66,10 @@ class PlanTokenizerTest {
         printTokens("#23");
         printTokens("23#");
         printTokens("1askdmk a1das555as6aasd a*5545 a564/68s4d");
+        printTokens("1askdmk #a1das555as6aasd a*5545 \na564/68s4d");
+        printTokens("1askdmk #a1das555as6aasd a*5545 \na564/68s4d \n \n \n");
+        printTokens("\n");
+        printTokens("\n \n \n");
     }
 
     @Test
@@ -79,6 +90,7 @@ class PlanTokenizerTest {
             t.consume(")");
         } catch (SyntaxError e) {
             System.out.println(e);
+            fail();
         }
         assertThrows(SyntaxError.class,() -> t.consume("+"));
     }
@@ -109,21 +121,51 @@ class PlanTokenizerTest {
     @Test
     void backTest1() {
         Tokenizer t = new PlanTokenizer("1 + 3 * 5(100)");
-        System.out.println(t.consume());
-        System.out.println(t.consume());
-        System.out.println(t.consume());
-        System.out.println(t.peek());
-        t.back();
-        System.out.println(t.peek());
-        System.out.println(t.consume());
-        System.out.println(t.peek());
+        System.out.println(t.consume());    //1
+        System.out.println(t.consume());    //+
+        System.out.println(t.consume());    //3
+        System.out.println(t.peek());       //*
+        t.back();                           //3 <- *
+        System.out.println(t.peek());       //3
+        System.out.println(t.consume());    //3
+        System.out.println(t.peek());       //*
     }
 
     @Test
     void backTest2() {
         Tokenizer t = new PlanTokenizer("1 + 3 * 5(100)");
         t.back();
-        System.out.println(t.consume());
-        System.out.println(t.peek());
+        System.out.println(t.consume());    //null
+        System.out.println(t.peek());       //1
+    }
+
+    private StringBuilder readFromFile(Path path){
+        if(path == null)
+            return new StringBuilder();
+
+        Charset charset = StandardCharsets.UTF_8;
+        try (BufferedReader reader = Files.newBufferedReader(path, charset)) {
+            StringBuilder s = new StringBuilder();
+            String line = null;
+
+            while((line = reader.readLine()) != null) {
+                s.append(line);
+                s.append(" \n");
+            }
+            return s;
+        } catch (NoSuchFileException | AccessDeniedException | FileNotFoundException e) {
+            System.err.println("File not found.");
+            return new StringBuilder();
+        } catch (IOException e) {
+            System.err.println("IOExcertion: " + e);
+            return new StringBuilder();
+        }
+    }
+
+    @Test
+    void design(){
+        StringBuilder s = readFromFile(Paths.get("src/ConstructionPlan.txt"));
+        // System.out.println(s.toString());
+        printTokens(s.toString());
     }
 }
