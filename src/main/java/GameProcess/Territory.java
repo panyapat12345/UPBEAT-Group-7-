@@ -1,11 +1,13 @@
 package GameProcess;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 interface territoryInterface {
     peekRegion getCurrentRegionInfo(int m, int n);
     void attackRegion(player player, region Target);
-    void move(cityCrew cityCrew, int direction);
+    void move(peekRegion target);
     void invest(player player, region region);
     void collect(player player, region region);
     void shoot(player player, int direction, region region);
@@ -18,15 +20,35 @@ interface RegionInterface{
 
 }
 
+class territoryDirectionIterator{
+    List<peekRegion> listRegion = null;
+    int index = 0;
+
+    territoryDirectionIterator(List<peekRegion> listRegion) {
+        this.listRegion = listRegion;
+    }
+
+    peekRegion next(){
+        if(index < listRegion.size()){
+            peekRegion current = listRegion.get(index);
+            index++;
+            return current;
+        }
+        else return new peekRegion(-1, 0.0, 0.0, 0.0, "null", -1, -1);
+    }
+}
+
 class Territory implements territoryInterface {
     private int m;
     private int n;
     private region[][] regions = null;
+    HashMap<String, Double> Variables;
 
     Territory(HashMap<String, Double> Variables) {
         this.m = Variables.get("m").intValue();
         this.n = Variables.get("n").intValue();
         regions = new region[m][n];
+        this.Variables = Variables;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 regions[i][j] = new region(m, n, Variables.get("max_dep"), Variables.get("interest_pct"));
@@ -37,6 +59,10 @@ class Territory implements territoryInterface {
     public boolean isInBound(int M, int N) {
         if ((M >= 0 && N >= 0) && (M < m && N < n)) return true;
         return false;
+    }
+
+    public boolean isInBound(peekRegion target) {
+        return isInBound(target.PositionM, target.PositionN);
     }
 
     public peekRegion getInfoOfRegion(int M, int N) {
@@ -51,10 +77,46 @@ class Territory implements territoryInterface {
         int CurrentN = crew.positionN;
         return 0;
     }
+
     public void shoot(player player, int direction){
         peekCiryCrew crew = player.getCityCrewInfo();
         peekRegion peekRegion = getInfoOfRegion(crew.positionM, crew.positionM);
         regions[peekRegion.PositionM][peekRegion.PositionN].beAttack(crew.budGet);
+    }
+
+    public territoryDirectionIterator getTerritoryDirectionIterator(int direction, int interestM, int interestN) {
+        List<peekRegion> listRegion = new LinkedList<>();
+        for(int i = 0; true; i++){
+            switch (direction){
+                case (1) -> interestM++;
+                case (2) -> {
+                    interestN++;
+                    interestM-=interestN%2;
+                }
+                case (3) -> {
+                    interestN++;
+                    interestM+=interestN%2;
+                }
+                case (4) -> interestM--;
+                case (5) -> {
+                    interestN--;
+                    interestM+=interestN%2;
+                }
+                case (6) -> {
+                    interestN--;
+                    interestM-=interestN%2;
+                }
+            }
+            listRegion.add(getCurrentRegionInfo(interestM, interestN));
+            if(listRegion.get(i).Type.equals("null")) break;
+        }
+
+        return new territoryDirectionIterator(listRegion);
+    }
+
+    public void relocate(peekRegion from, peekRegion to){
+        regions[to.PositionM][to.PositionN] = regions[from.PositionM][from.PositionN];
+        regions[from.PositionM][from.PositionN] = new region(from.PositionM, from.PositionN, Variables.get("max_dep"), Variables.get("interest_pct"));
     }
 
     @Override
@@ -68,7 +130,7 @@ class Territory implements territoryInterface {
     }
 
     @Override
-    public void move(cityCrew cityCrew, int direction) {
+    public void move(peekRegion target) {
 
     }
 

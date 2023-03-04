@@ -34,12 +34,14 @@ class player implements playerInterface, territoryInterface {
         return budget.intValue();
     }
 
+    public void spend(double amount) { budget-=amount; }
+
     @Override
     public peekCiryCrew getCityCrewInfo() {
         return crew.getCityCrewInfo();
     }
 
-    private void newCityCrew(){
+    public void newCityCrew(){
         crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN, budget);
     }
 
@@ -54,7 +56,7 @@ class player implements playerInterface, territoryInterface {
     }
 
     @Override
-    public void move(cityCrew cityCrew, int direction) {
+    public void move(peekRegion target) {
 
     }
 
@@ -100,6 +102,11 @@ class cityCrew{
         this.positionM = PositionM;
         this.positionN = PositionN;
         this.budGet = budGet;
+    }
+
+    public void move(peekRegion target){
+        this.positionM = target.PositionM;
+        this.positionN = target.PositionN;
     }
 
     public peekCiryCrew getCityCrewInfo(){

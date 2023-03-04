@@ -10,6 +10,7 @@ class internalOperator implements internalOperatorInterface {
     private LinkedList<player> players = new LinkedList<>();
     private int totalPlayers = 0;
     private int turn = 0;
+    private player currentPlayer = null;
 
     internalOperator(HashMap<String, Double> variables) {
         this.variables = variables;
@@ -75,40 +76,23 @@ class internalOperator implements internalOperatorInterface {
         return false;
     }
 
+    private boolean isRegionOfOpponent(peekRegion region){
+        return isRegionOfOpponent(region.PositionM, region.PositionN);
+    }
+
     @Override
     public int opponent() {
-        int currentM = currentPlayer().getCityCrewInfo().positionM;
-        int currentN = currentPlayer().getCityCrewInfo().positionM;
+        int interestM = currentPlayer().getCityCrewInfo().positionM;
+        int interestN = currentPlayer().getCityCrewInfo().positionM;
         int nearestRegion = 0;
         int distance = Integer.MAX_VALUE;
+        peekRegion current;
 
-        int interestM;
-        int interestN;
         for(int i = 1; i <= 6; i++){
-            interestM = currentM;
-            interestN = currentN;
+            territoryDirectionIterator itr = territory.getTerritoryDirectionIterator(i, interestM, interestN);
             for(int j = 0; true; j++){
-                switch (i){
-                    case (1) -> interestM++;
-                    case (2) -> {
-                        interestN++;
-                        interestM-=interestN%2;
-                    }
-                    case (3) -> {
-                        interestN++;
-                        interestM+=interestN%2;
-                    }
-                    case (4) -> interestM--;
-                    case (5) -> {
-                        interestN--;
-                        interestM+=interestN%2;
-                    }
-                    case (6) -> {
-                        interestN--;
-                        interestM-=interestN%2;
-                    }
-                }
-                if(!territory.isInBound(interestM, interestN)) break;
+                current = itr.next();
+                if(current.Type.equals("null")) break;
                 else if(isRegionOfOpponent(interestM, interestN)) {
                     if(j < distance) {
                         distance = j;
@@ -126,39 +110,21 @@ class internalOperator implements internalOperatorInterface {
     public int nearby(int direction) {
         int interestM = currentPlayer().getCityCrewInfo().positionM;
         int interestN = currentPlayer().getCityCrewInfo().positionM;
-        int returnValue = 0;
+        territoryDirectionIterator itr = territory.getTerritoryDirectionIterator(direction, interestM, interestN);
+        peekRegion current;
         for(int i = 0; true; i++){
-            switch (direction){
-                case (1) -> interestM++;
-                case (2) -> {
-                    interestN++;
-                    interestM-=interestN%2;
-                }
-                case (3) -> {
-                    interestN++;
-                    interestM+=interestN%2;
-                }
-                case (4) -> interestM--;
-                case (5) -> {
-                    interestN--;
-                    interestM+=interestN%2;
-                }
-                case (6) -> {
-                    interestN--;
-                    interestM-=interestN%2;
-                }
-            }
-            if(!territory.isInBound(interestM, interestN)) break;
+            current = itr.next();
+            if(current.Type.equals("null")) break;
             else if(isRegionOfOpponent(interestM, interestN)) {
-                returnValue = (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).Deposit)));
+                return (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).Deposit)));
             }
         }
-        return returnValue;
+        return 0;
     }
 
     public void NextTurn(){
         turn++;
-        player CurrentPlayer = currentPlayer();
+        currentPlayer = currentPlayer();
         for(int cycle = 0; cycle < 10000; cycle++){
         }
     }
@@ -166,6 +132,70 @@ class internalOperator implements internalOperatorInterface {
     @Override
     public player currentPlayer() {
         return players.get(turn%totalPlayers);
+    }
+
+    public void done(){
+        NextTurn();
+    }
+
+    public void relocate(){
+        peekCiryCrew currentCrew = currentPlayer.getCityCrewInfo();
+        currentPlayer.newCityCrew();
+        int cityM = currentPlayer.getCityCrewInfo().positionM;
+        int cityN = currentPlayer.getCityCrewInfo().positionN;
+        int cityMDistance = cityM-currentCrew.positionM;
+        int cityNDistance = cityN-currentCrew.positionN;
+        double distance = Math.sqrt(cityMDistance*cityMDistance-cityNDistance*cityNDistance);
+        double cost = 5*distance+10;
+        if(isRegionOfOpponent(currentCrew.positionM, currentCrew.positionN));
+        else if(cost > currentPlayer.budget());
+        else{
+            territory.relocate(territory.getInfoOfRegion(cityM, cityN), territory.getInfoOfRegion(currentCrew.positionM, currentCrew.positionN));
+            currentPlayer.spend(cost);
+        }
+        done();
+    }
+
+    public void move(int direction){
+        int interestM = currentPlayer().getCityCrewInfo().positionM;
+        int interestN = currentPlayer().getCityCrewInfo().positionM;
+        switch (direction){
+            case (1) -> interestM++;
+            case (2) -> {
+                interestN++;
+                interestM-=interestN%2;
+            }
+            case (3) -> {
+                interestN++;
+                interestM+=interestN%2;
+            }
+            case (4) -> interestM--;
+            case (5) -> {
+                interestN--;
+                interestM+=interestN%2;
+            }
+            case (6) -> {
+                interestN--;
+                interestM-=interestN%2;
+            }
+        }
+        peekRegion interestRegion = territory.getCurrentRegionInfo(interestM, interestN);
+        if(territory.isInBound(interestRegion));
+        else if(isRegionOfOpponent(interestRegion));
+        else if (currentPlayer.budget() > 0.0) currentPlayer.move(interestRegion);
+        else done();
+    }
+
+    public void invest(){
+
+    }
+
+    public void collect(){
+
+    }
+
+    public void shoot(){
+
     }
 }
 
