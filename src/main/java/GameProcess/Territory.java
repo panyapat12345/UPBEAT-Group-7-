@@ -136,13 +136,13 @@ class Territory implements territoryInterface {
 }
 
 class region {
-    private int playerOwnerIndex;
-    private Double deposit;
-    private Double maxDeposit;
-    private Double interestRate;
-    private String type;
-    private int positionM;
-    private int positionN;
+    private int playerOwnerIndex = 0;
+    private Double deposit = 0.0;
+    private Double maxDeposit = 0.0;
+    private Double interestRate = 0.0;
+    private String type = "null";
+    private int positionM = 0;
+    private int positionN = 0;
 
     public int getOwner() { return playerOwnerIndex; }
     public int invest(player player, double amount) { return 0; }
@@ -179,7 +179,7 @@ class region {
     }
 
     public void calculateInterest(){
-        this.deposit+=(deposit*interestRate/100.0);
+        deposit+=(deposit*interestRate/100.0);
     }
 }
 
