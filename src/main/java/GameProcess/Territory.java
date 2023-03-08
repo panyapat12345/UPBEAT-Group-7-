@@ -78,6 +78,10 @@ class Territory implements territoryInterface {
 
     public void takeRegion(peekCiryCrew crew){ regions[crew.positionM][crew.positionN].take(crew); }
 
+    public void newCityCenter(peekCiryCrew crew){
+        regions[crew.positionM][crew.positionN].newCityCenter(crew);
+    }
+
     public territoryDirectionIterator getTerritoryDirectionIterator(int direction, int interestM, int interestN) {
         List<peekRegion> listRegion = new LinkedList<>();
         for(int i = 0; true; i++){
@@ -180,6 +184,11 @@ class region {
 
     public void calculateInterest(){
         deposit+=(deposit*interestRate/100.0);
+    }
+
+    public void newCityCenter(peekCiryCrew crew){
+        this.playerOwnerIndex = crew.crewOfPlayer;
+        this.type = "cityCenter";
     }
 }
 

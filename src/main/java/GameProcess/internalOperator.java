@@ -28,6 +28,8 @@ public class internalOperator implements internalOperatorInterface {
     public void addPlayer() {
         players.add(new player(totalPlayers, 50, 50));
         totalPlayers++;
+        peekCiryCrew crew = currentPlayer().getCityCrewInfo();
+        territory.newCityCenter(crew);
     }
 
     public HashMap<String, Double> GetVariables(){ return variables; }
