@@ -3,7 +3,7 @@ package GameProcess;
 import java.util.HashMap;
 
 interface playerInterface {
-    void isDefeat();
+    boolean isDefeat();
     int budget();
     peekCiryCrew getCityCrewInfo();
 }
@@ -11,7 +11,7 @@ interface playerInterface {
 interface cityCrewInterface {
 }
 
-class player implements playerInterface, territoryInterface {
+class player implements playerInterface {
     private int playerIndex;
     private HashMap<String, Double> variablesOfConstructionPlan;
     private int cityCenterPositionM;
@@ -25,8 +25,8 @@ class player implements playerInterface, territoryInterface {
     }
 
     @Override
-    public void isDefeat() {
-
+    public boolean isDefeat() {
+        return budget <= 0.0;
     }
 
     @Override
@@ -45,49 +45,8 @@ class player implements playerInterface, territoryInterface {
         crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN, budget);
     }
 
-    @Override
-    public peekRegion getCurrentRegionInfo(int m, int n) {
-        return null;
-    }
-
-    @Override
-    public void attackRegion(player player, region Target) {
-
-    }
-
-    @Override
-    public void move(peekRegion target) {
-
-    }
-
-    @Override
-    public void invest(player player, region region) {
-
-    }
-
-    @Override
-    public void collect(player player, region region) {
-
-    }
-
-    @Override
-    public void shoot(player player, int direction, region region) {
-
-    }
-
-    @Override
-    public void relocate(region From, region To) {
-
-    }
-
-    @Override
-    public int opponent(region currentRegion) {
-        return 0;
-    }
-
-    @Override
-    public int nearby(cityCrew cityCrew) {
-        return 0;
+    public void moveCrew(peekRegion interestRegion) {
+        crew.move(interestRegion);
     }
 }
 
@@ -105,8 +64,8 @@ class cityCrew{
     }
 
     public void move(peekRegion target){
-        this.positionM = target.PositionM;
-        this.positionN = target.PositionN;
+        this.positionM = target.positionM;
+        this.positionN = target.positionN;
     }
 
     public peekCiryCrew getCityCrewInfo(){

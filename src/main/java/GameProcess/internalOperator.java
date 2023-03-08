@@ -43,19 +43,19 @@ class internalOperator implements internalOperatorInterface {
 
     @Override
     public int budget() {
-        return players.get(turn/totalPlayers).budget();
+        return currentPlayer.budget();
     }
 
     @Override
     public int deposit() {
         peekCiryCrew crew = currentPlayer().getCityCrewInfo();
-        return territory.getCurrentRegionInfo(crew.positionM, crew.positionN).Deposit.intValue();
+        return territory.getCurrentRegionInfo(crew.positionM, crew.positionN).deposit.intValue();
     }
 
     @Override
     public int interest() {
-        peekCiryCrew crew = currentPlayer().getCityCrewInfo();
-        return territory.getCurrentRegionInfo(crew.positionM, crew.positionN).InterestRate.intValue();
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
+        return territory.getCurrentRegionInfo(crew).interestRate.intValue();
     }
 
     @Override
@@ -70,14 +70,18 @@ class internalOperator implements internalOperatorInterface {
         peekRegion peek = territory.getInfoOfRegion(m, n);
 
         if(peek.Type.equals("null"));
-        else if(peek.PlayerOwnerIndex == -1);
-        else if(peek.PlayerOwnerIndex != currentPlayer) return true;
+        else if(peek.playerOwnerIndex == -1);
+        else if(peek.playerOwnerIndex != currentPlayer) return true;
 
         return false;
     }
 
     private boolean isRegionOfOpponent(peekRegion region){
-        return isRegionOfOpponent(region.PositionM, region.PositionN);
+        return isRegionOfOpponent(region.positionM, region.positionN);
+    }
+
+    private boolean isRegionOfOpponent(peekCiryCrew crew){
+        return isRegionOfOpponent(crew.positionM, crew.positionN);
     }
 
     @Override
@@ -116,7 +120,7 @@ class internalOperator implements internalOperatorInterface {
             current = itr.next();
             if(current.Type.equals("null")) break;
             else if(isRegionOfOpponent(interestM, interestN)) {
-                return (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).Deposit)));
+                return (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).deposit)));
             }
         }
         return 0;
@@ -145,9 +149,9 @@ class internalOperator implements internalOperatorInterface {
         int cityN = currentPlayer.getCityCrewInfo().positionN;
         int cityMDistance = cityM-currentCrew.positionM;
         int cityNDistance = cityN-currentCrew.positionN;
-        double distance = Math.sqrt(cityMDistance*cityMDistance-cityNDistance*cityNDistance);
+        double distance = Math.sqrt(Math.pow(cityMDistance, 2)+Math.pow(cityNDistance, 2));
         double cost = 5*distance+10;
-        if(isRegionOfOpponent(currentCrew.positionM, currentCrew.positionN));
+        if(isRegionOfOpponent(currentCrew));
         else if(cost > currentPlayer.budget());
         else{
             territory.relocate(territory.getInfoOfRegion(cityM, cityN), territory.getInfoOfRegion(currentCrew.positionM, currentCrew.positionN));
@@ -180,14 +184,21 @@ class internalOperator implements internalOperatorInterface {
             }
         }
         peekRegion interestRegion = territory.getCurrentRegionInfo(interestM, interestN);
-        if(territory.isInBound(interestRegion));
+        if(!territory.isInBound(interestRegion));
         else if(isRegionOfOpponent(interestRegion));
-        else if (currentPlayer.budget() > 0.0) currentPlayer.move(interestRegion);
+        else if (currentPlayer.budget() > 0.0) currentPlayer.moveCrew(interestRegion);
         else done();
     }
 
-    public void invest(){
+    public void invest(Double amount){
+        peekRegion interestRegion = territory.getCurrentRegionInfo(currentPlayer.getCityCrewInfo());
+        if(!territory.isInBound(interestRegion));
+        else if(isRegionOfOpponent(interestRegion));
+        else if(amount > currentPlayer.budget());
+        else{
+            currentPlayer.spend(amount);
 
+        }
     }
 
     public void collect(){

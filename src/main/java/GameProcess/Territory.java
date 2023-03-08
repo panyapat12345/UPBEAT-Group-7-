@@ -62,7 +62,7 @@ class Territory implements territoryInterface {
     }
 
     public boolean isInBound(peekRegion target) {
-        return isInBound(target.PositionM, target.PositionN);
+        return isInBound(target.positionM, target.positionN);
     }
 
     public peekRegion getInfoOfRegion(int M, int N) {
@@ -81,7 +81,7 @@ class Territory implements territoryInterface {
     public void shoot(player player, int direction){
         peekCiryCrew crew = player.getCityCrewInfo();
         peekRegion peekRegion = getInfoOfRegion(crew.positionM, crew.positionM);
-        regions[peekRegion.PositionM][peekRegion.PositionN].beAttack(crew.budGet);
+        regions[peekRegion.positionM][peekRegion.positionN].beAttack(crew.budGet);
     }
 
     public territoryDirectionIterator getTerritoryDirectionIterator(int direction, int interestM, int interestN) {
@@ -115,8 +115,12 @@ class Territory implements territoryInterface {
     }
 
     public void relocate(peekRegion from, peekRegion to){
-        regions[to.PositionM][to.PositionN] = regions[from.PositionM][from.PositionN];
-        regions[from.PositionM][from.PositionN] = new region(from.PositionM, from.PositionN, Variables.get("max_dep"), Variables.get("interest_pct"));
+        regions[to.positionM][to.positionN] = regions[from.positionM][from.positionN];
+        regions[from.positionM][from.positionN] = new region(from.positionM, from.positionN, Variables.get("max_dep"), Variables.get("interest_pct"));
+    }
+
+    public peekRegion getCurrentRegionInfo(peekCiryCrew crew) {
+        return getCurrentRegionInfo(crew.positionM, crew.positionN);
     }
 
     @Override
@@ -134,9 +138,8 @@ class Territory implements territoryInterface {
 
     }
 
-    @Override
-    public void invest(player player, region region) {
-
+    public void invest(peekRegion region, Double amount) {
+        regions[region.positionM][region.positionN].addDeposit(amount);
     }
 
     @Override
@@ -166,47 +169,51 @@ class Territory implements territoryInterface {
 }
 
 class region {
-    private int PlayerOwnerIndex;
-    private Double Deposit;
-    private Double MaxDeposit;
-    private Double InterestRate;
-    private String Type;
-    private int PositionM;
-    private int PositionN;
+    private int playerOwnerIndex;
+    private Double deposit;
+    private Double maxDeposit;
+    private Double interestRate;
+    private String type;
+    private int positionM;
+    private int positionN;
 
-    public int GetOwner() { return PlayerOwnerIndex; }
+    public int getOwner() { return playerOwnerIndex; }
     public int invest(player player, double Amount) { return 0; }
-    public int deposit() { return Deposit.intValue(); }
-    public int interest(player player, double Amount) { return (int)(Deposit * InterestRate / 100.0); }
+    public int deposit() { return deposit.intValue(); }
+    public int interest(player player, double Amount) { return (int)(deposit * interestRate / 100.0); }
     public int beAttack(Double Amount) { return 0; }
 
     region(int M, int N, Double MaxDeposit, Double InterestRate) {
-        this.PositionM = M;
-        this.PositionN = N;
-        this.PlayerOwnerIndex = -1;
-        this.MaxDeposit = MaxDeposit;
-        this.InterestRate = InterestRate;
-        this.Type = "Empty";
+        this.positionM = M;
+        this.positionN = N;
+        this.playerOwnerIndex = -1;
+        this.maxDeposit = MaxDeposit;
+        this.interestRate = InterestRate;
+        this.type = "Empty";
     }
 
-    public peekRegion getInfo() { return new peekRegion(PlayerOwnerIndex, Deposit, MaxDeposit, InterestRate, Type, PositionM, PositionN); }
+    public peekRegion getInfo() { return new peekRegion(playerOwnerIndex, deposit, maxDeposit, interestRate, type, positionM, positionN); }
+
+    public void addDeposit(Double amount) {
+        deposit +=amount;
+    }
 }
 
 class peekRegion {
-    public int PlayerOwnerIndex;
-    public Double Deposit;
+    public int playerOwnerIndex;
+    public Double deposit;
     public Double MaxDeposit;
-    public Double InterestRate;
+    public Double interestRate;
     public String Type;
-    public int PositionM;
-    public int PositionN;
+    public int positionM;
+    public int positionN;
     peekRegion(int PlayerOwnerIndex, Double Deposit, Double MaxDeposit, Double InterestRate, String Type, int M, int N){
-        this.PlayerOwnerIndex = PlayerOwnerIndex;
-        this.Deposit = Deposit;
+        this.playerOwnerIndex = PlayerOwnerIndex;
+        this.deposit = Deposit;
         this.MaxDeposit = MaxDeposit;
-        this.InterestRate = InterestRate;
+        this.interestRate = InterestRate;
         this.Type = Type;
-        this.PositionM = M;
-        this.PositionN = N;
+        this.positionM = M;
+        this.positionN = N;
     }
 }
