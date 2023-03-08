@@ -2,6 +2,7 @@ package GameProcess;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class internalOperator implements internalOperatorInterface {
@@ -18,7 +19,8 @@ public class internalOperator implements internalOperatorInterface {
         territory = new Territory(variables);
         instance = this;
         addPlayer();
-        currentPlayer = currentPlayer();
+//        currentPlayer();
+        NextTurn();
     }
 
     public static internalOperator instance(){
@@ -131,7 +133,7 @@ public class internalOperator implements internalOperatorInterface {
         return 0;
     }
 
-    public void nextTurn(){
+    public void NextTurn(){
         territory.nextTurn();
         turn++;
         while(currentPlayer().isDefeat()) turn++;
@@ -144,7 +146,7 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void done(){
-        nextTurn();
+        NextTurn();
     }
 
     public void relocate(){
