@@ -19,7 +19,6 @@ public class internalOperator implements internalOperatorInterface {
         territory = new Territory(variables);
         instance = this;
         addPlayer();
-//        currentPlayer();
         NextTurn();
     }
 
@@ -28,10 +27,11 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void addPlayer() {
-        players.add(new player(totalPlayers, 50, 50));
+        player newPlayer = new player(totalPlayers, 50, 50);
         totalPlayers++;
-        peekCiryCrew crew = currentPlayer().getCityCrewInfo();
-        territory.newCityCenter(crew);
+        newPlayer.newCityCrew();
+        territory.newCityCenter(newPlayer.getCityCrewInfo());
+        players.add(newPlayer);
     }
 
     public HashMap<String, Double> GetVariables(){ return variables; }
@@ -136,7 +136,7 @@ public class internalOperator implements internalOperatorInterface {
     public void NextTurn(){
         territory.nextTurn();
         turn++;
-        while(currentPlayer().isDefeat()) turn++;
+        while(currentPlayer().isDefeat()){ turn++; }
         currentPlayer = currentPlayer();
     }
 

@@ -14,25 +14,23 @@ interface cityCrewInterface {
 }
 
 class player implements playerInterface {
-    private int playerIndex;
+    private int playerIndex = -1;
     private HashMap<String, Double> variablesOfConstructionPlan;
-    private int cityCenterPositionM;
-    private int cityCenterPositionN;
+    private int cityCenterPositionM = 50;
+    private int cityCenterPositionN = 50;
     private Double budget;
     private cityCrew crew = null;
     private String status = "alive";
     public Set<peekRegion> ownRegions;
 
-    player(int Id){
+    player(int Id, int cityCenterPositionM, int cityCenterPositionN){
         playerIndex = Id;
         variablesOfConstructionPlan = new HashMap<>();
-        cityCenterPositionM = 50;
-        cityCenterPositionN = 50;
     }
 
     @Override
     public boolean isDefeat() {
-        return status.equals("alive");
+        return !status.equals("alive");
     }
 
     @Override
