@@ -1,6 +1,7 @@
 package AST;
 import Exception.*;
 import java.util.Map;
+import GameProcess.internalOperator;
 
 public class Identifier implements Expr{
     private String name;
@@ -27,23 +28,23 @@ public class Identifier implements Expr{
 
         // specialWords read from GameSystem
         if(name.equals("rows")){
-            // return GameSystem.instance().rows;
+            return internalOperator.instance().rows();
         } else if(name.equals("cols")){
-            // return GameSystem.instance().cols();
+            return internalOperator.instance().cols();
         } else if(name.equals("currow")){
-            // return GameSystem.instance().currow();
+            // return internalOperator.instance().currow();
         } else if(name.equals("curcol")){
-            // return GameSystem.instance().curcol();
+            // return internalOperator.instance().curcol();
         } else if(name.equals("budget")){
-            // return GameSystem.instance().budget();
+            // return internalOperator.instance().budget();
         } else if(name.equals("deposit")){
-            // return GameSystem.instance().deposit();
+            // return internalOperator.instance().deposit();
         } else if(name.equals("int")){
-            // return GameSystem.instance().interest();
+            // return internalOperator.instance().interest();
         } else if(name.equals("maxdeposit")){
-            // return GameSystem.instance().maxDeposit();
-        } else {
-            // return GameSystem.instance().random();
+            // return internalOperator.instance().maxDeposit();
+        } else if(name.equals("random")){
+            return internalOperator.instance().random();
         }
 
         if(bindings.containsKey(name))

@@ -11,3 +11,5 @@
 /src/test/AllPlanTestFiles/WhileTestFiles/whileParseTestResult5.txt
 /src/test/AllPlanTestFiles/WhileTestFiles/whileParseTestResult2.txt
 /src/test/AllPlanTestFiles/WhileTestFiles/whileFinalParseTestResult6.txt
+/.gradle/
+/build/
