@@ -1,6 +1,6 @@
 package GameProcess;
 
-interface internalOperatorInterface {
+public interface internalOperatorInterface {
     int rows();
     int cols();
     int currow();

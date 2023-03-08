@@ -1,9 +1,11 @@
 package GameProcess;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-class internalOperator implements internalOperatorInterface {
+public class internalOperator implements internalOperatorInterface {
     private static internalOperator instance;
     HashMap<String, Double> variables;
     private Territory territory;
@@ -12,7 +14,7 @@ class internalOperator implements internalOperatorInterface {
     private int turn = 0;
     private player currentPlayer = null;
 
-    internalOperator(HashMap<String, Double> variables) {
+    public internalOperator(HashMap<String, Double> variables) {
         this.variables = variables;
         territory = new Territory(variables);
         instance = this;
@@ -33,12 +35,12 @@ class internalOperator implements internalOperatorInterface {
 
     @Override
     public int currow() {
-        return currentPlayer().getCityCrewInfo().positionM;
+        return currentPlayer.getCityCrewInfo().positionM;
     }
 
     @Override
     public int curcol() {
-        return currentPlayer().getCityCrewInfo().positionN;
+        return currentPlayer.getCityCrewInfo().positionN;
     }
 
     @Override
@@ -97,7 +99,7 @@ class internalOperator implements internalOperatorInterface {
             for(int j = 0; true; j++){
                 current = itr.next();
                 if(current.Type.equals("null")) break;
-                else if(isRegionOfOpponent(interestM, interestN)) {
+                else if(isRegionOfOpponent(current.positionM, current.positionN)) {
                     if(j < distance) {
                         distance = j;
                         nearestRegion = (10*distance)+i;
@@ -119,7 +121,7 @@ class internalOperator implements internalOperatorInterface {
         for(int i = 0; true; i++){
             current = itr.next();
             if(current.Type.equals("null")) break;
-            else if(isRegionOfOpponent(interestM, interestN)) {
+            else if(isRegionOfOpponent(current.positionM, current.positionN)) {
                 return (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).deposit)));
             }
         }
@@ -127,6 +129,7 @@ class internalOperator implements internalOperatorInterface {
     }
 
     public void NextTurn(){
+
         turn++;
         currentPlayer = currentPlayer();
         for(int cycle = 0; cycle < 10000; cycle++){
@@ -197,16 +200,68 @@ class internalOperator implements internalOperatorInterface {
         else if(amount > currentPlayer.budget());
         else{
             currentPlayer.spend(amount);
-
+            territory.invest(interestRegion, amount);
         }
     }
 
-    public void collect(){
-
+    public void collect(Double amount){
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
+        peekRegion region = territory.getInfoOfRegion(crew.positionM, crew.positionN);
+        if(currentPlayer.budget() < 1) done();
+        else if (region.deposit < amount);
+        else{
+            territory.collect(crew, amount);
+            currentPlayer.reciveDeposit(amount);
+        }
     }
 
-    public void shoot(){
+    public void shoot(Double amount, int direction){
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
+        if(currentPlayer.budget() > amount+1) return;
+        currentPlayer.spend(1);
+        int interestM = currentPlayer().getCityCrewInfo().positionM;
+        int interestN = currentPlayer().getCityCrewInfo().positionM;
+        switch (direction){
+            case (1) -> interestM++;
+            case (2) -> {
+                interestN++;
+                interestM-=interestN%2;
+            }
+            case (3) -> {
+                interestN++;
+                interestM+=interestN%2;
+            }
+            case (4) -> interestM--;
+            case (5) -> {
+                interestN--;
+                interestM+=interestN%2;
+            }
+            case (6) -> {
+                interestN--;
+                interestM-=interestN%2;
+            }
+        }
+        currentPlayer.spend(amount);
+        peekRegion target = territory.getInfoOfRegion(interestM, interestN);
+        if(territory.shoot(target, amount).equals("lostRegion")){
+            player targetPlayer = players.get(target.playerOwnerIndex);
+            if(targetPlayer.lostRegion(target).equals("caseDefeat")){
+                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1, -1.0);
+                Iterator<peekRegion> regions =  targetPlayer.getOwnRegions().iterator();
+                while(regions.hasNext()){
+                    peekRegion current = regions.next();
+                    ghostCrew.positionM = current.positionM;
+                    ghostCrew.positionN = current.positionN;
+                    territory.takeRegion(ghostCrew);
+                }
+            }
+        }
+    }
 
+    public void takeRegion(){
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
+        peekRegion region = territory.getInfoOfRegion(crew.positionM, crew.positionN);
+        if(region.playerOwnerIndex == -1) territory.takeRegion(crew);
     }
 }
 

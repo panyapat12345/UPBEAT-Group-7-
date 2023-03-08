@@ -1,6 +1,8 @@
 package GameProcess;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Set;
 
 interface playerInterface {
     boolean isDefeat();
@@ -18,6 +20,8 @@ class player implements playerInterface {
     private int cityCenterPositionN;
     private Double budget;
     private cityCrew crew = null;
+    private String status = "alive";
+    public Set<peekRegion> ownRegions;
 
     player(int Id){
         playerIndex = Id;
@@ -26,7 +30,7 @@ class player implements playerInterface {
 
     @Override
     public boolean isDefeat() {
-        return budget <= 0.0;
+        return status.equals("alive");
     }
 
     @Override
@@ -47,6 +51,26 @@ class player implements playerInterface {
 
     public void moveCrew(peekRegion interestRegion) {
         crew.move(interestRegion);
+    }
+
+    public void reciveDeposit(Double amount) { budget+=amount; }
+
+    public Double getConstructionPlanVarible(String name){
+        return variablesOfConstructionPlan.get(name);
+    }
+
+    public void setConstructionPlanVarible(String name, Double var){
+        variablesOfConstructionPlan.put(name, var);
+    }
+
+    public String lostRegion(peekRegion region){
+        ownRegions.remove(region);
+        if(region.Type == "cityCenter") this.status = "defeat";
+        return "caseDefeat";
+    }
+
+    public Set<peekRegion> getOwnRegions(){
+        return ownRegions;
     }
 }
 
