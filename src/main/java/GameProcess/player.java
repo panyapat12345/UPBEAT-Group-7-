@@ -26,8 +26,8 @@ class player implements playerInterface {
     player(int Id){
         playerIndex = Id;
         variablesOfConstructionPlan = new HashMap<>();
-        cityCenterPositionM = 10;
-        cityCenterPositionN = 10;
+        cityCenterPositionM = 50;
+        cityCenterPositionN = 50;
     }
 
     @Override
