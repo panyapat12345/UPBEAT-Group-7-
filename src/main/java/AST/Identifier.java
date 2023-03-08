@@ -32,9 +32,9 @@ public class Identifier implements Expr{
         } else if(name.equals("cols")){
             return internalOperator.instance().cols();
         } else if(name.equals("currow")){
-            // return internalOperator.instance().currow();
+            return internalOperator.instance().currow();
         } else if(name.equals("curcol")){
-            // return internalOperator.instance().curcol();
+            return internalOperator.instance().curcol();
         } else if(name.equals("budget")){
             // return internalOperator.instance().budget();
         } else if(name.equals("deposit")){

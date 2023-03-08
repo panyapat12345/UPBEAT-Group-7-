@@ -62,8 +62,9 @@ class callVariableTest {
     void caseOne() throws SyntaxError {
         // printIteratorTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
         // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
-        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
+         printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
         // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
+        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
 
     }
 

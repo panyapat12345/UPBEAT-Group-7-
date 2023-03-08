@@ -27,9 +27,9 @@ public class InfoExpr implements Expr{
 
     public int eval(Map<String, Integer> bindings) {
         if(key.equals("opponent")){
-            // internalOperator.instance().opponent();
+            // return internalOperator.instance().opponent();
         } else {
-            // internalOperator.instance().nearby();
+            // return internalOperator.instance().nearby();
         }
         return 0;
     }
