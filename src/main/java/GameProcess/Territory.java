@@ -125,6 +125,14 @@ class Territory implements territoryInterface {
     public void invest(peekRegion region, Double amount) {
         regions[region.positionM][region.positionN].addDeposit(amount);
     }
+
+    public void nextTurn(){
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                regions[i][j].calculateInterest();
+            }
+        }
+    }
 }
 
 class region {

@@ -18,6 +18,7 @@ public class internalOperator implements internalOperatorInterface {
         this.variables = variables;
         territory = new Territory(variables);
         instance = this;
+        addPlayer();
     }
 
     public static internalOperator instance(){
@@ -129,7 +130,7 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void NextTurn(){
-
+        territory.nextTurn();
         turn++;
         currentPlayer = currentPlayer();
         for(int cycle = 0; cycle < 10000; cycle++){
