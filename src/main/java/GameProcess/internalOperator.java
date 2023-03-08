@@ -1,8 +1,11 @@
 package GameProcess;
+import AST.Action;
+import AST.PlanTree;
+import AST.Tree;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class internalOperator implements internalOperatorInterface {
@@ -10,6 +13,7 @@ public class internalOperator implements internalOperatorInterface {
     HashMap<String, Double> variables;
     private Territory territory;
     private LinkedList<player> players = new LinkedList<>();
+    private LinkedList<Tree> constructionPlans = new LinkedList<>();
     private int totalPlayers = 0;
     private int turn = 0;
     private player currentPlayer = null;
@@ -18,20 +22,25 @@ public class internalOperator implements internalOperatorInterface {
         this.variables = variables;
         territory = new Territory(variables);
         instance = this;
-        addPlayer();
-        NextTurn();
     }
 
     public static internalOperator instance(){
         return instance;
     }
 
-    public void addPlayer() {
+    public void addPlayer(String constructionPlan) {
         player newPlayer = new player(totalPlayers, 50, 50);
         totalPlayers++;
         newPlayer.newCityCrew();
         territory.newCityCenter(newPlayer.getCityCrewInfo());
         players.add(newPlayer);
+        Tree tree = null;
+        try{ tree = new PlanTree(constructionPlan); }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+        constructionPlans.add(tree);
+        if(totalPlayers == 1) currentPlayer = currentPlayer();
     }
 
     public HashMap<String, Double> GetVariables(){ return variables; }
@@ -138,6 +147,36 @@ public class internalOperator implements internalOperatorInterface {
         turn++;
         while(currentPlayer().isDefeat()){ turn++; }
         currentPlayer = currentPlayer();
+        Iterator<Action.FinalActionState> currentPlan =  constructionPlans.get(turn%totalPlayers).iterator();
+        Action.FinalActionState currentAction;
+        while(currentPlan.hasNext()){
+            currentAction = currentPlan.next();
+            actionProcess(currentAction);
+        }
+    }
+
+    public void actionProcess(Action.FinalActionState currentAction){
+        String key = currentAction.getAction();
+        String direction = currentAction.getDirection();
+        int directionInt;
+        switch (direction) {
+            case"up" -> directionInt = 1;
+            case"upright" -> directionInt = 2;
+            case"downright" -> directionInt = 3;
+            case"down" -> directionInt = 4;
+            case"downleft" -> directionInt = 5;
+            case"upleft" -> directionInt = 6;
+            default -> directionInt = 0;
+        }
+        int value = currentAction.getValue();
+        switch (key) {
+            case "done" -> done();
+            case "relocate" -> relocate();
+            case "move" -> move(Integer.valueOf(directionInt));
+            case "invest" -> invest(Double.valueOf(value));
+            case "collect" -> collect(Double.valueOf(value));
+            case "shoot" -> shoot(Double.valueOf(value), Integer.valueOf(directionInt));
+        }
     }
 
     @Override
@@ -220,7 +259,6 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void shoot(Double amount, int direction){
-        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         if(currentPlayer.budget() > amount+1) return;
         currentPlayer.spend(1);
         int interestM = currentPlayer().getCityCrewInfo().positionM;
