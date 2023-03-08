@@ -165,7 +165,7 @@ class PlanTokenizerTest {
     @Test
     void design(){
         StringBuilder s = readFromFile(Paths.get("src/ConstructionPlan.txt"));
-        // System.out.println(s.toString());
-        printTokens(s.toString());
+        System.out.println(s.toString());
+        // printTokens(s.toString());
     }
 }

@@ -43,7 +43,7 @@ public class PlanTree implements Tree{
 
             while((line = reader.readLine()) != null) {
                 s.append(line);
-                s.append(" ");
+                s.append(" \n");
             }
             return s;
         } catch (NoSuchFileException | AccessDeniedException | FileNotFoundException e) {
@@ -72,6 +72,10 @@ public class PlanTree implements Tree{
 
     public Iterator<Action.FinalActionState> iterator() {
         return new planTreeIterator();
+    }
+
+    public Map<String, Integer> getVariables(){
+        return bindings;
     }
 
     private class planTreeIterator implements Iterator<Action.FinalActionState> {

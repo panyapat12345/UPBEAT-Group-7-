@@ -1,0 +1,7 @@
+i = 10
+
+while (i) {
+    invest random
+    i = i - 1
+}
+done

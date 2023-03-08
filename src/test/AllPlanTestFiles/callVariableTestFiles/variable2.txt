@@ -1,0 +1,22 @@
+m = 0
+i = 10
+Budget = 25
+
+while (i) {
+    dir = random % 6
+    collect dir
+
+    if (dir - 4) then move upleft               # 5
+    else if (dir - 3) then move downleft        # 4
+    else if (dir - 2) then move down            # 3
+    else if (dir - 1) then move downright       # 2
+    else if (dir) then move upright             # 1
+    else move up                                # 0
+    m = m + 1
+
+    i = i - 1
+}
+
+if(Budget-50)
+then relocate
+else done
