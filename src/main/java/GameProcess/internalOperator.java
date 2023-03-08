@@ -3,6 +3,7 @@ import AST.Action;
 import AST.PlanTree;
 import AST.Tree;
 
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -22,6 +23,19 @@ public class internalOperator implements internalOperatorInterface {
         this.variables = variables;
         territory = new Territory(variables);
         instance = this;
+        /*
+        StringBuilder constructionPlan = new StringBuilder();
+        FileReader constructionPlanReader = null;
+        try {
+            constructionPlanReader = new FileReader("src/ConstructionPlan.txt");
+            int i;
+            while((i = constructionPlanReader.read()) != -1) constructionPlan.append((char)i);
+            constructionPlanReader.close();
+        }
+        catch (Exception e) { e.printStackTrace(); }
+
+        addPlayer(constructionPlan.toString());
+        */
     }
 
     public static internalOperator instance(){
