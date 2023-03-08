@@ -18,7 +18,7 @@ class player implements playerInterface {
     private HashMap<String, Double> variablesOfConstructionPlan;
     private int cityCenterPositionM = 50;
     private int cityCenterPositionN = 50;
-    private Double budget;
+    private Double budget = 0.0;
     private cityCrew crew = null;
     private String status = "alive";
     public Set<peekRegion> ownRegions;
@@ -75,10 +75,10 @@ class player implements playerInterface {
 }
 
 class cityCrew{
-    private int crewOfPlayer;
-    private int positionM;
-    private int positionN;
-    private Double budGet;
+    private int crewOfPlayer = -1;
+    private int positionM = -1;
+    private int positionN = -1;
+    private Double budGet = -1.0;
 
     cityCrew(int playerIndex, int PositionN, int PositionM, Double budGet) {
         this.crewOfPlayer = playerIndex;
