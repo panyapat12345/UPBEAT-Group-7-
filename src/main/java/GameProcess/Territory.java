@@ -37,10 +37,10 @@ class territoryDirectionIterator{
 }
 
 class Territory implements territoryInterface {
-    private int m;
-    private int n;
+    private int m = 0;
+    private int n = 0;
     private region[][] regions = null;
-    HashMap<String, Double> Variables;
+    HashMap<String, Double> Variables = null;
 
     Territory(HashMap<String, Double> Variables) {
         this.m = Variables.get("m").intValue();

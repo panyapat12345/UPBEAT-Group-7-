@@ -26,7 +26,7 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void addPlayer() {
-        players.add(new player(totalPlayers));
+        players.add(new player(totalPlayers, 50, 50));
         totalPlayers++;
     }
 

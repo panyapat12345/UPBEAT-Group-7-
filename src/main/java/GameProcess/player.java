@@ -23,11 +23,11 @@ class player implements playerInterface {
     private String status = "alive";
     public Set<peekRegion> ownRegions;
 
-    player(int Id){
+    player(int Id, int cityCenterPositionM, int cityCenterPositionN){
         playerIndex = Id;
         variablesOfConstructionPlan = new HashMap<>();
-        cityCenterPositionM = 50;
-        cityCenterPositionN = 50;
+        this.cityCenterPositionM = cityCenterPositionM;
+        this.cityCenterPositionN = cityCenterPositionN;
     }
 
     @Override
