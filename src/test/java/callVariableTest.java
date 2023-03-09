@@ -3,8 +3,12 @@ import GameProcess.*;
 import AST.*;
 import Exception.*;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -45,7 +49,7 @@ class callVariableTest {
     private void printIteratorTestForGameSystem(Path path) {
         try {
             Tree tree = new PlanTree(path);
-            internalOperatorInterface game = new internalOperator(getConfigVals());
+            internalOperator game = new internalOperator(getConfigVals());
 
             Iterator<Action.FinalActionState> i = tree.iterator();
 
@@ -58,14 +62,60 @@ class callVariableTest {
         }
     }
 
+    private void GameSystemTest(Path path){
+        internalOperator game = new internalOperator(getConfigVals());
+        game.addPlayer(readFromFile(path).toString());
+        game.NextTurn();
+    }
+
+    private StringBuilder readFromFile(Path path){
+        if(path == null)
+            return new StringBuilder();
+
+        Charset charset = StandardCharsets.UTF_8;
+        try (BufferedReader reader = Files.newBufferedReader(path, charset)) {
+            StringBuilder s = new StringBuilder();
+            String line = null;
+
+            while((line = reader.readLine()) != null) {
+                s.append(line);
+                s.append(" \n");
+            }
+            return s;
+        } catch (NoSuchFileException | AccessDeniedException | FileNotFoundException e) {
+            System.err.println("File not found.");
+            return new StringBuilder();
+        } catch (IOException e) {
+            System.err.println("IOExcertion: " + e);
+            return new StringBuilder();
+        }
+    }
+
+    @Test
+    void planIfTest() {
+        printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan0.txt"));
+//         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan1.txt"));
+//         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan2.txt"));
+//         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan3.txt"));
+//         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan4.txt"));
+//         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan5.txt"));
+//         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan6.txt"));
+    }
+
     @Test
     void caseOne() throws SyntaxError {
         // printIteratorTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
-        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
-         printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
-        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
-        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
 
+        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
+        // printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
+//         printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
+         printIteratorTestForGameSystem(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
     }
+
+    @Test
+    void caseOneRunGame() {
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/runningPlans/plan1.txt"));
+    }
+
 
 }

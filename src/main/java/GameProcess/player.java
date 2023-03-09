@@ -16,9 +16,11 @@ interface cityCrewInterface {
 class player implements playerInterface {
     private int playerIndex = -1;
     private HashMap<String, Double> variablesOfConstructionPlan;
-    private int cityCenterPositionM = 50;
-    private int cityCenterPositionN = 50;
-    private Double budget = 0.0;
+    private int cityCenterPositionM ;
+    private int cityCenterPositionN;
+    private int playerPositionM;
+    private int playerPositionN;
+    private Double budget = 100000.0;
     private cityCrew crew = null;
     private String status = "alive";
     public Set<peekRegion> ownRegions;
@@ -26,6 +28,15 @@ class player implements playerInterface {
     player(int Id, int cityCenterPositionM, int cityCenterPositionN){
         playerIndex = Id;
         variablesOfConstructionPlan = new HashMap<>();
+        this.cityCenterPositionM = cityCenterPositionM;
+        this.cityCenterPositionN = cityCenterPositionN;
+        startTurn();
+    }
+
+    // new method
+    public void startTurn() {
+        playerPositionM = cityCenterPositionM;
+        playerPositionN = cityCenterPositionN;
     }
 
     @Override
@@ -72,6 +83,19 @@ class player implements playerInterface {
     public Set<peekRegion> getOwnRegions(){
         return ownRegions;
     }
+
+    // new method
+    public int getPlayerPositionM() { return playerPositionM; }
+    public void setPlayerPositionM(int m) {
+        // need location checking
+        playerPositionM = m;
+    }
+
+    public int getPlayerPositionN() { return playerPositionN; }
+    public void setPlayerPositionN(int n) {
+        // need location checking
+        playerPositionN = n;
+    }
 }
 
 class cityCrew{
@@ -87,6 +111,7 @@ class cityCrew{
         this.budGet = budGet;
     }
 
+    // for relocate!
     public void move(peekRegion target){
         this.positionM = target.positionM;
         this.positionN = target.positionN;

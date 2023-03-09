@@ -13,4 +13,6 @@ public interface Tree extends Iterable<Action.FinalActionState>{
 
     @Override
     Iterator<Action.FinalActionState> iterator();
+
+    public Iterator<Action.FinalActionState> iteratorRealTime();
 }

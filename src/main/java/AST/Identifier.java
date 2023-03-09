@@ -32,8 +32,10 @@ public class Identifier implements Expr{
         } else if(name.equals("cols")){
             return internalOperator.instance().cols();
         } else if(name.equals("currow")){
+//            System.out.println("currow");
             return internalOperator.instance().currow();
         } else if(name.equals("curcol")){
+//            System.out.println("curcol");
             return internalOperator.instance().curcol();
         } else if(name.equals("budget")){
             // return internalOperator.instance().budget();

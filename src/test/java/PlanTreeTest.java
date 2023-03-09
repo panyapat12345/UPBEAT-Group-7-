@@ -167,7 +167,7 @@ class PlanTreeTest {
     }
 
     @Test
-    void planIfTest() {
+    void planIfReadTest() {
 //         readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan0.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult0.txt");
 //         readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan1.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult0.txt");
 //         readFileTest("src/test/AllPlanTestFiles/IfTestFiles/ifPlan2.txt", "src/test/AllPlanTestFiles/IfTestFiles/ifParseTestResult2.txt");
@@ -178,7 +178,7 @@ class PlanTreeTest {
     }
 
     @Test
-    void planWhileTest() {
+    void planWhileReadTest() {
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles/whilePlan1.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult1.txt");
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan2.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult2.txt");
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan3.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult3.txt");

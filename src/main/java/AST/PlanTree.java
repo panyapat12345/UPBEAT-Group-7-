@@ -74,6 +74,10 @@ public class PlanTree implements Tree{
         return new planTreeIterator();
     }
 
+    public Iterator<Action.FinalActionState> iteratorRealTime() {
+        return new planTreeIterator("realtime");
+    }
+
     public Map<String, Integer> getVariables(){
         return bindings;
     }
@@ -84,6 +88,11 @@ public class PlanTree implements Tree{
 
         public planTreeIterator() {
             computeNext();
+        }
+
+        public planTreeIterator(String mode) {
+            if(!mode.equals("realtime"))
+                computeNext();
         }
 
         private void computeNext() {
@@ -204,6 +213,19 @@ public class PlanTree implements Tree{
                 return result;
             }
             throw new NoSuchElementException("null next");
+        }
+
+        public Action.FinalActionState nextRealTime() throws NoSuchRealTimeElementException {
+            if (next != null){
+                if(next.getAction().equals("done")){
+                    next = null;
+                    throw new NoSuchRealTimeElementException("null next");
+                }
+            }
+            computeNext();
+
+            if(hasNext()) return next;
+            throw new NoSuchRealTimeElementException("null next");
         }
     }
 }

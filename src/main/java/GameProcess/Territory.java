@@ -52,11 +52,12 @@ class Territory implements territoryInterface {
                 regions[i][j] = new region(m, n, Variables.get("max_dep"), Variables.get("interest_pct"));
             }
         }
+        // debug
+//        System.out.println(m + " " + n);
     }
 
     public boolean isInBound(int M, int N) {
-        if ((M >= 0 && N >= 0) && (M < m && N < n)) return true;
-        return false;
+        return ((M >= 0 && N >= 0) && (M < m && N < n));
     }
 
     public boolean isInBound(peekRegion target) {
@@ -64,7 +65,7 @@ class Territory implements territoryInterface {
     }
 
     public peekRegion getInfoOfRegion(int M, int N) {
-        if(isInBound(M, N)) return regions[M][N].getInfo();
+        if(isInBound(M, N)) return regions[M][N].getInfo(M, N);
         else return new peekRegion(-1, 0.0, 0.0, 0.0, "null", -1, -1);
     }
 
@@ -123,7 +124,7 @@ class Territory implements territoryInterface {
 
     @Override
     public peekRegion getCurrentRegionInfo(int m, int n) {
-        return regions[m][n].getInfo();
+        return regions[m][n].getInfo(m, n);
     }
 
     public void invest(peekRegion region, Double amount) {
@@ -176,7 +177,7 @@ class region {
         this.type = "empty";
     }
 
-    public peekRegion getInfo() { return new peekRegion(playerOwnerIndex, deposit, maxDeposit, interestRate, type, positionM, positionN); }
+    public peekRegion getInfo(int m, int n) { return new peekRegion(playerOwnerIndex, deposit, maxDeposit, interestRate, type, m, n); }
 
     public void addDeposit(Double amount) {
         deposit +=amount;
