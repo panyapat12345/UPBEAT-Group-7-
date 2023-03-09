@@ -165,9 +165,20 @@ public class internalOperator implements internalOperatorInterface {
         currentPlayer.startTurn();
         Iterator<Action.FinalActionState> currentPlan =  constructionPlans.get(turn%totalPlayers).iteratorRealTime();
         Action.FinalActionState currentAction;
-
+/*
         while(currentPlan.hasNext()){
             currentAction = currentPlan.next();
+            try {
+                System.out.println(currentAction);
+                actionProcess(currentAction);
+            } catch (DoneExecuteException e) {
+                return;
+            }
+        }
+*/
+        while(true){
+            currentAction = currentPlan.next();
+            if (currentAction == null) break;
             try {
                 System.out.println(currentAction);
                 actionProcess(currentAction);
@@ -264,7 +275,7 @@ public class internalOperator implements internalOperatorInterface {
         else if (currentPlayer.budget() > 0.0) {
             currentPlayer.setPlayerPositionM(interestRegion.positionM);
             currentPlayer.setPlayerPositionN(interestRegion.positionN);
-            System.out.println("Player " + currentPlayer.getPlayerPositionM() + " " + currentPlayer.getPlayerPositionN());
+//            System.out.println("Player " + currentPlayer.getPlayerPositionM() + " " + currentPlayer.getPlayerPositionN());
 //            currentPlayer.moveCrew(interestRegion);
         }
         else done();

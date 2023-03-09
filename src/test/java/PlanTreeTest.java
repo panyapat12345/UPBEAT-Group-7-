@@ -21,13 +21,17 @@ class PlanTreeTest {
     void printIteratorTest(String s) {
         try {
             Tree tree = new PlanTree(s);
-
+/*
             Iterator<Action.FinalActionState> i = tree.iterator();
-
             while(i.hasNext())
                 System.out.println(i.next());
-
-/*             */
+*/
+            Iterator<Action.FinalActionState> i = tree.iteratorRealTime();
+            while(true){
+                Action.FinalActionState action = i.next();
+                if (action == null) break;
+                System.out.println(action);
+            }
 
         } catch (SyntaxError e) {
             System.err.println(e);
@@ -184,7 +188,7 @@ class PlanTreeTest {
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan3.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult3.txt");
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan4.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult4.txt");
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan5.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult5.txt");
-//
+
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan6.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult6.txt");
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan7.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult7.txt");
 //        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles//whilePlan8.txt", "src/test/AllPlanTestFiles/WhileTestFiles//whileParseTestResult8.txt");
@@ -195,7 +199,7 @@ class PlanTreeTest {
 
     @Test
     void planTest() {
-//        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles/whileFinalPlan.txt", "src/test/AllPlanTestFiles/PlanTestFiles/parseTestResult.txt");
-        readFileTest("src/ConstructionPlan.txt", "src/test/AllPlanTestFiles/PlanTestFiles/parseTestResult.txt");
+        readFileTest("src/test/AllPlanTestFiles/WhileTestFiles/whileFinalPlan.txt", "src/test/AllPlanTestFiles/PlanTestFiles/parseTestResult.txt");
+//        readFileTest("src/ConstructionPlan.txt", "src/test/AllPlanTestFiles/PlanTestFiles/parseTestResult.txt");
     }
 }

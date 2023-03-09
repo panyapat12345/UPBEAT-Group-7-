@@ -97,7 +97,7 @@ Action implements Command{
         else if(left != null && right == null)
             return new FinalActionState(key, left.toString(), -999);
         else if(left == null && right != null) {
-            System.out.println(right.eval(bindings));
+            // System.out.println(right.eval(bindings));
             return new FinalActionState(key, "", right.eval(bindings));
         }
         else

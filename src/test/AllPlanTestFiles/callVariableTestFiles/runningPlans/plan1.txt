@@ -1,0 +1,6 @@
+collect currow
+collect curcol
+move up
+collect currow
+collect curcol
+done
