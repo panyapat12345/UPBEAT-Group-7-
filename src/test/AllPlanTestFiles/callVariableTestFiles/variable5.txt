@@ -1,8 +1,6 @@
-Cols = 999
-Rows = 555
+invest 5000
+move up
+invest budget
+invest budget
 
-invest Cols
-collect Rows
-
-invest cols
-collect rows
+collect maxdeposit

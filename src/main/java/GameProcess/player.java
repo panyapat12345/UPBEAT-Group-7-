@@ -1,7 +1,6 @@
 package GameProcess;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Set;
 
 interface playerInterface {
@@ -18,25 +17,22 @@ class player implements playerInterface {
     private HashMap<String, Double> variablesOfConstructionPlan;
     private int cityCenterPositionM ;
     private int cityCenterPositionN;
-    private int playerPositionM;
-    private int playerPositionN;
-    private Double budget = 100000.0;
+    private Double budget;
     private cityCrew crew = null;
     private String status = "alive";
     public Set<peekRegion> ownRegions;
 
-    player(int Id, int cityCenterPositionM, int cityCenterPositionN){
+    player(int Id, int cityCenterPositionM, int cityCenterPositionN, double budget){
         playerIndex = Id;
         variablesOfConstructionPlan = new HashMap<>();
         this.cityCenterPositionM = cityCenterPositionM;
         this.cityCenterPositionN = cityCenterPositionN;
-        startTurn();
+        this.budget = budget;
     }
 
     // new method
     public void startTurn() {
-        playerPositionM = cityCenterPositionM;
-        playerPositionN = cityCenterPositionN;
+        crew.startTurn(cityCenterPositionM, cityCenterPositionN);
     }
 
     @Override
@@ -57,7 +53,8 @@ class player implements playerInterface {
     }
 
     public void newCityCrew(){
-        crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN, budget);
+//        crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN, budget);
+        crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN);
     }
 
     public void moveCrew(peekRegion interestRegion) {
@@ -83,42 +80,41 @@ class player implements playerInterface {
     public Set<peekRegion> getOwnRegions(){
         return ownRegions;
     }
-
-    // new method
-    public int getPlayerPositionM() { return playerPositionM; }
-    public void setPlayerPositionM(int m) {
-        // need location checking
-        playerPositionM = m;
-    }
-
-    public int getPlayerPositionN() { return playerPositionN; }
-    public void setPlayerPositionN(int n) {
-        // need location checking
-        playerPositionN = n;
-    }
 }
 
 class cityCrew{
     private int crewOfPlayer = -1;
     private int positionM = -1;
     private int positionN = -1;
-    private Double budGet = -1.0;
+//    private Double budGet = -1.0;
 
-    cityCrew(int playerIndex, int PositionN, int PositionM, Double budGet) {
+//    cityCrew(int playerIndex, int PositionN, int PositionM, Double budGet) {
+//        this.crewOfPlayer = playerIndex;
+//        this.positionM = PositionM;
+//        this.positionN = PositionN;
+//        this.budGet = budGet;
+//    }
+
+    cityCrew(int playerIndex, int PositionN, int PositionM) {
         this.crewOfPlayer = playerIndex;
         this.positionM = PositionM;
         this.positionN = PositionN;
-        this.budGet = budGet;
     }
 
-    // for relocate!
+    public void startTurn(int cityCenterPositionM, int cityCenterPositionN) {
+        positionM = cityCenterPositionM;
+        positionN = cityCenterPositionN;
+    }
+
     public void move(peekRegion target){
         this.positionM = target.positionM;
         this.positionN = target.positionN;
     }
 
     public peekCiryCrew getCityCrewInfo(){
-        return new peekCiryCrew(crewOfPlayer, positionM, positionN, budGet);
+//        return new peekCiryCrew(crewOfPlayer, positionM, positionN, budGet);
+        return new peekCiryCrew(crewOfPlayer, positionM, positionN);
+
     }
 }
 
@@ -126,12 +122,18 @@ class peekCiryCrew implements cityCrewInterface{
     public int crewOfPlayer;
     public int positionM;
     public int positionN;
-    public Double budGet;
+//    public Double budGet;
 
-    public peekCiryCrew(int crewOfPlayer, int positionM, int positionN, Double budGet){
+//    public peekCiryCrew(int crewOfPlayer, int positionM, int positionN, Double budGet){
+//        this.crewOfPlayer = crewOfPlayer;
+//        this.positionM = positionM;
+//        this.positionN = positionN;
+//        this.budGet = budGet;
+//    }
+
+    public peekCiryCrew(int crewOfPlayer, int positionM, int positionN){
         this.crewOfPlayer = crewOfPlayer;
         this.positionM = positionM;
         this.positionN = positionN;
-        this.budGet = budGet;
     }
 }

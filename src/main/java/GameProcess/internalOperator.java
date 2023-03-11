@@ -3,7 +3,6 @@ import AST.Action;
 import AST.PlanTree;
 import AST.Tree;
 
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -44,7 +43,7 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void addPlayer(String constructionPlan) {
-        player newPlayer = new player(totalPlayers, 50, 50);
+        player newPlayer = new player(totalPlayers, 50, 50, variables.get("init_budget"));
         totalPlayers++;
         newPlayer.newCityCrew();
         territory.newCityCenter(newPlayer.getCityCrewInfo());
@@ -64,12 +63,12 @@ public class internalOperator implements internalOperatorInterface {
 
     @Override
     public int currow() {
-        return currentPlayer.getPlayerPositionM();
+        return currentPlayer.getCityCrewInfo().positionM;
     }
 
     @Override
     public int curcol() {
-        return currentPlayer.getPlayerPositionN();
+        return currentPlayer.getCityCrewInfo().positionN;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class internalOperator implements internalOperatorInterface {
     @Override
     public int deposit() {
         peekCiryCrew crew = currentPlayer().getCityCrewInfo();
-        return territory.getCurrentRegionInfo(crew.positionM, crew.positionN).deposit.intValue();
+        return territory.getCurrentRegionInfo(crew).deposit.intValue();
     }
 
     @Override
@@ -100,7 +99,9 @@ public class internalOperator implements internalOperatorInterface {
         int currentPlayer = turn%totalPlayers;
         peekRegion peek = territory.getInfoOfRegion(m, n);
 
+        // out of scope
         if(peek.Type.equals("null"));
+        // no owner
         else if(peek.playerOwnerIndex == -1);
         else if(peek.playerOwnerIndex != currentPlayer) return true;
 
@@ -158,11 +159,12 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void NextTurn(){
-        territory.nextTurn();
         turn++;
-        while(currentPlayer().isDefeat()){ turn++; }
+        territory.nextTurn();
         currentPlayer = currentPlayer();
+        if(currentPlayer().isDefeat())  return;
         currentPlayer.startTurn();
+
         Iterator<Action.FinalActionState> currentPlan =  constructionPlans.get(turn%totalPlayers).iteratorRealTime();
         Action.FinalActionState currentAction;
 /*
@@ -240,10 +242,8 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void move(int direction) throws DoneExecuteException{
-//        int interestM = currentPlayer().getCityCrewInfo().positionM;
-//        int interestN = currentPlayer().getCityCrewInfo().positionN;
-        int interestM = currentPlayer().getPlayerPositionM();
-        int interestN = currentPlayer().getPlayerPositionN();
+        int interestM = currentPlayer().getCityCrewInfo().positionM;
+        int interestN = currentPlayer().getCityCrewInfo().positionN;
         switch (direction){
             case (1) -> interestM++;
             case (2) -> {
@@ -267,16 +267,11 @@ public class internalOperator implements internalOperatorInterface {
 //        System.out.println("pre " + interestM + " " + interestN);
         peekRegion interestRegion = territory.getCurrentRegionInfo(interestM, interestN);
 //        System.out.println("post " + interestRegion.positionM + " " + interestRegion.positionN);
-        if(!territory.isInBound(interestRegion)) {
-//            System.out.println("1 " + territory.isInBound(interestRegion));
-            return;
-        }
+        if(!territory.isInBound(interestRegion)) return;
         else if(isRegionOfOpponent(interestRegion)) return;
         else if (currentPlayer.budget() > 0.0) {
-            currentPlayer.setPlayerPositionM(interestRegion.positionM);
-            currentPlayer.setPlayerPositionN(interestRegion.positionN);
 //            System.out.println("Player " + currentPlayer.getPlayerPositionM() + " " + currentPlayer.getPlayerPositionN());
-//            currentPlayer.moveCrew(interestRegion);
+            currentPlayer.moveCrew(interestRegion);
         }
         else done();
     }
@@ -333,7 +328,8 @@ public class internalOperator implements internalOperatorInterface {
         if(territory.shoot(target, amount).equals("lostRegion")){
             player targetPlayer = players.get(target.playerOwnerIndex);
             if(targetPlayer.lostRegion(target).equals("caseDefeat")){
-                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1, -1.0);
+//                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1, -1.0);
+                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1);
                 Iterator<peekRegion> regions =  targetPlayer.getOwnRegions().iterator();
                 while(regions.hasNext()){
                     peekRegion current = regions.next();

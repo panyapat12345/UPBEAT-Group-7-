@@ -1,8 +1,0 @@
-Cols = 999
-Rows = 555
-
-invest Cols
-collect Rows
-
-invest cols
-collect rows

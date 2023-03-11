@@ -109,6 +109,9 @@ class callVariableTest {
 //         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
 //         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
 //         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
-        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
+//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable5.txt"));
+//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable6.txt"));
+
     }
 }
