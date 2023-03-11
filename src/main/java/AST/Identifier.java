@@ -40,9 +40,9 @@ public class Identifier implements Expr{
         } else if(name.equals("budget")){
              return internalOperator.instance().budget();
         } else if(name.equals("deposit")){
-            // return internalOperator.instance().deposit();
+             return internalOperator.instance().deposit();
         } else if(name.equals("int")){
-            // return internalOperator.instance().interest();
+             return internalOperator.instance().interest();
         } else if(name.equals("maxdeposit")){
              return internalOperator.instance().maxDeposit();
         } else if(name.equals("random")){

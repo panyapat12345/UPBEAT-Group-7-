@@ -1,0 +1,34 @@
+invest currow
+invest curcol
+i = 5
+while(i){
+    i = i-1
+    move up
+}
+i = 5
+while(i){
+    i = i-1
+    move upright
+}
+i = 5
+while(i){
+    i = i-1
+    move downright
+}
+i = 5
+while(i){
+    i = i-1
+    move down
+}
+i = 5
+while(i){
+    i = i-1
+    move downleft
+}
+i = 5
+while(i){
+    i = i-1
+    move upleft
+}
+invest currow
+invest curcol

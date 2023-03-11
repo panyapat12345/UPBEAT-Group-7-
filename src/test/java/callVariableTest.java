@@ -23,7 +23,7 @@ class callVariableTest {
         configVals.put("init_plan_min", 5.0);
         configVals.put("init_plan_sec", 0.0);
         configVals.put("init_budget", 10000.0);
-        configVals.put("init_center_dep", 100.0);
+        configVals.put("init_center_dep", 500.0);
         configVals.put("plan_rev_min", 30.0);
         configVals.put("plan_rev_sec", 0.0);
         configVals.put("rev_cost", 100.0);
@@ -110,8 +110,9 @@ class callVariableTest {
 //         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
 //         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
 //        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
-        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable5.txt"));
+//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable5.txt"));
 //        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable6.txt"));
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable7.txt"));
 
     }
 }

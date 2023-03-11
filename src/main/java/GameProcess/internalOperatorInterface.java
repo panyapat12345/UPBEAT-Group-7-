@@ -11,7 +11,7 @@ public interface internalOperatorInterface {
     int maxDeposit();
     int random();
     int opponent();
-    int nearby(int direction);
+    int nearby(String direction);
 
     player currentPlayer();
 }

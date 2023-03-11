@@ -1,5 +1,6 @@
 package AST;
 import Exception.*;
+import GameProcess.internalOperator;
 import java.util.Map;
 
 public class InfoExpr implements Expr{
@@ -27,11 +28,10 @@ public class InfoExpr implements Expr{
 
     public int eval(Map<String, Integer> bindings) {
         if(key.equals("opponent")){
-            // return internalOperator.instance().opponent();
+             return internalOperator.instance().opponent();
         } else {
-            // return internalOperator.instance().nearby();
+             return internalOperator.instance().nearby(dir.toString());
         }
-        return 0;
     }
 
     public void prettyPrint(StringBuilder s) {

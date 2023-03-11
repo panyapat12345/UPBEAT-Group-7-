@@ -3,6 +3,8 @@ package GameProcess;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.AbstractMap;
+import java.util.Map.Entry;
 
 interface territoryInterface {
     peekRegion getCurrentRegionInfo(int m, int n);
@@ -69,19 +71,28 @@ class Territory implements territoryInterface {
     }
 
     public void collect(peekCiryCrew crew, Double amount){
-        if(regions[crew.positionM][crew.positionN].deposit() == amount)
+        int oldDeposit = regions[crew.positionM][crew.positionN].deposit();
+        if(regions[crew.positionM][crew.positionN].deposit() == amount){
+            // if it is city center ?
             regions[crew.positionM][crew.positionN].returnOwner();
+        }
         regions[crew.positionM][crew.positionN].takeDeposit(amount);
+        // debug
+        System.err.println("(" + crew.positionM + ", " + crew.positionN + ") deposit form " + oldDeposit + " to " + regions[crew.positionM][crew.positionN].deposit());
     }
 
     public String shoot(peekRegion region, Double amount){
+        // debug
+        double oldDeposit = regions[region.positionM][region.positionN].deposit();
+        System.err.println("shoot (" + region.positionM + ", " + region.positionN + ") from " + oldDeposit + " to " + (oldDeposit - amount.intValue()));
+
         return regions[region.positionM][region.positionN].beAttack(amount);
     }
 
     public void takeRegion(peekCiryCrew crew){ regions[crew.positionM][crew.positionN].take(crew); }
 
     public void newCityCenter(peekCiryCrew crew){
-        regions[crew.positionM][crew.positionN].newCityCenter(crew);
+        regions[crew.positionM][crew.positionN].newCityCenter(crew, Variables.get("init_center_dep"));
     }
 
     public territoryDirectionIterator getTerritoryDirectionIterator(int direction, int interestM, int interestN) {
@@ -116,9 +127,11 @@ class Territory implements territoryInterface {
 
     public void relocate(peekCiryCrew crew, peekRegion from, peekRegion to){
         regions[to.positionM][to.positionN].returnOwner();
-        regions[to.positionM][to.positionN].newCityCenter(crew);
+        regions[to.positionM][to.positionN].newCityCenter(crew, Variables.get("init_center_dep"));
         regions[from.positionM][from.positionN].returnOwner();
         regions[from.positionM][from.positionN].take(crew);
+        // debug
+        System.err.println("relocate citycenter from (" + from.positionM + ", " + from.positionN + ") to (" + to.positionM + ", " +to.positionN + ")");
     }
 
     public peekRegion getCurrentRegionInfo(peekCiryCrew crew) {
@@ -131,8 +144,11 @@ class Territory implements territoryInterface {
     }
 
     public void invest(peekCiryCrew crew, peekRegion region, Double amount) {
+        int oldDeposit = regions[crew.positionM][crew.positionN].deposit();
         if(region.playerOwnerIndex == -1)   takeRegion(crew);
         regions[region.positionM][region.positionN].addDeposit(amount);
+        // debug
+        System.err.println("(" + region.positionM + ", " + region.positionN + ") deposit from " + oldDeposit + " to " + regions[region.positionM][region.positionN].deposit());
     }
 
     public void nextTurn(peekCiryCrew crew, int turn){
@@ -146,12 +162,19 @@ class Territory implements territoryInterface {
     }
 
     public void clearOwnerRegionOf(peekCiryCrew crew){
+        // debug
+        List<Entry<Integer, Integer>> returnOwner = new LinkedList<>();
         for(int i = 0; i < m; i++){
             for(int j = 0; j < n; j++){
-                if(regions[i][j].getOwner() == crew.crewOfPlayer)
+                if(regions[i][j].getOwner() == crew.crewOfPlayer){
                     regions[i][j].returnOwner();
+                    // debug
+                    returnOwner.add(new AbstractMap.SimpleEntry<>(i, j));
+                }
             }
         }
+        // debug
+        System.err.println("return owner : " + returnOwner);
     }
 }
 
@@ -198,7 +221,10 @@ class region {
         this.type = "empty";
     }
 
-    public peekRegion getInfo(int m, int n, int turn) { return new peekRegion(playerOwnerIndex, deposit, maxDeposit, calculateRealInterestRate(turn), type, m, n); }
+    public peekRegion getInfo(int m, int n, int turn) {
+//        System.err.println(turn);
+        return new peekRegion(playerOwnerIndex, deposit, maxDeposit, calculateRealInterestRate(turn), type, m, n);
+    }
 
     public void addDeposit(Double amount) {
         deposit +=amount;
@@ -206,6 +232,7 @@ class region {
 
     public double calculateRealInterestRate(int turn) {
         // b * log10 d * ln t
+//        System.err.println(init_InterestRate + " * " + Math.log10(deposit) + " * " + Math.log(turn));
         return init_InterestRate * Math.log10(deposit) * Math.log(turn);
     }
 
@@ -213,9 +240,10 @@ class region {
         deposit+=(deposit* calculateRealInterestRate(turn) /100.0);
     }
 
-    public void newCityCenter(peekCiryCrew crew){
+    public void newCityCenter(peekCiryCrew crew, double init_deposit){
         this.playerOwnerIndex = crew.crewOfPlayer;
         this.type = "cityCenter";
+        this.deposit = init_deposit;
     }
 }
 

@@ -1,8 +1,14 @@
-Cols = 999
-Rows = 555
-
-invest Cols
-collect Rows
-
-invest cols
-collect rows
+collect 99
+move up
+invest 1000
+collect 500
+move down
+invest 0
+move up
+invest 0
+move upleft
+invest deposit
+collect 0
+collect budget
+collect budget
+collect budget

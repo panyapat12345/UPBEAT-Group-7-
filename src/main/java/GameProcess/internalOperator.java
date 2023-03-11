@@ -44,7 +44,8 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void addPlayer(String constructionPlan) {
-        player newPlayer = new player(totalPlayers, 50, 50, variables.get("init_budget"));
+        int cityCenterPositionM = 50, cityCenterPositionN = 50;
+        player newPlayer = new player(totalPlayers, cityCenterPositionM, cityCenterPositionN, variables.get("init_budget"));
         totalPlayers++;
         newPlayer.newCityCrew();
         territory.newCityCenter(newPlayer.getCityCrewInfo());
@@ -146,6 +147,10 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     @Override
+    public int nearby(String direction) {
+        return nearby(stringDirToInt(direction));
+    }
+
     public int nearby(int direction) {
         int interestM = currentPlayer().getCityCrewInfo().positionM;
         int interestN = currentPlayer().getCityCrewInfo().positionM;
@@ -164,7 +169,8 @@ public class internalOperator implements internalOperatorInterface {
     public void NextTurn(){
         totalTurn++;
         realTurn = (int) Math.round(totalTurn * 1.0/totalPlayers);
-        System.out.println(totalTurn + " " + realTurn);
+        // debug
+        System.err.println("Turn : " + realTurn);
         currentPlayer = currentPlayer();
         if(currentPlayer().isDefeat())  return;
         territory.nextTurn(currentPlayer.getCityCrewInfo(), realTurn);
@@ -198,16 +204,7 @@ public class internalOperator implements internalOperatorInterface {
     public void actionProcess(Action.FinalActionState currentAction) throws DoneExecuteException{
         String key = currentAction.getAction();
         String direction = currentAction.getDirection();
-        int directionInt;
-        switch (direction) {
-            case"up" -> directionInt = 1;
-            case"upright" -> directionInt = 2;
-            case"downright" -> directionInt = 3;
-            case"down" -> directionInt = 4;
-            case"downleft" -> directionInt = 5;
-            case"upleft" -> directionInt = 6;
-            default -> directionInt = 0;
-        }
+        int directionInt = stringDirToInt(direction);
         int value = currentAction.getValue();
         switch (key) {
             case "done" -> done();
@@ -217,6 +214,20 @@ public class internalOperator implements internalOperatorInterface {
             case "collect" -> collect((double) value);
             case "shoot" -> shoot((double) value, directionInt);
         }
+    }
+
+    private int stringDirToInt(String direction){
+        int directionInt;
+        switch (direction) {
+            case"up" -> directionInt = 4;
+            case"upright" -> directionInt = 2;
+            case"downright" -> directionInt = 3;
+            case"down" -> directionInt = 1;
+            case"downleft" -> directionInt = 5;
+            case"upleft" -> directionInt = 6;
+            default -> directionInt = 0;
+        }
+        return directionInt;
     }
 
     @Override
@@ -248,6 +259,7 @@ public class internalOperator implements internalOperatorInterface {
     public void move(int direction) throws DoneExecuteException{
         int interestM = currentPlayer().getCityCrewInfo().positionM;
         int interestN = currentPlayer().getCityCrewInfo().positionN;
+        int oldM = interestM, oldN = interestN;
         switch (direction){
             case (1) -> interestM++;
             case (2) -> {
@@ -256,37 +268,38 @@ public class internalOperator implements internalOperatorInterface {
             }
             case (3) -> {
                 interestN++;
-                interestM+=interestN%2;
+                interestM+=(interestN+1)%2;
             }
             case (4) -> interestM--;
             case (5) -> {
                 interestN--;
-                interestM+=interestN%2;
+                interestM+=(interestN+1)%2;
             }
             case (6) -> {
                 interestN--;
                 interestM-=interestN%2;
             }
         }
-//        System.out.println("pre " + interestM + " " + interestN);
         peekRegion interestRegion = territory.getCurrentRegionInfo(interestM, interestN);
-//        System.out.println("post " + interestRegion.positionM + " " + interestRegion.positionN);
-        if(!territory.isInBound(interestRegion)) return;
-        else if(isRegionOfOpponent(interestRegion)) return;
+
+        if(!territory.isInBound(interestRegion) || isRegionOfOpponent(interestRegion)) return;
         else if (currentPlayer.budget() > 0.0) {
-//            System.out.println("Player " + currentPlayer.getPlayerPositionM() + " " + currentPlayer.getPlayerPositionN());
             currentPlayer.moveCrew(interestRegion);
+            //debug
+            System.err.println("citycrew from (" + oldM + ", " + oldN + ") to (" + currentPlayer.getCityCrewInfo().positionM + ", " + currentPlayer.getCityCrewInfo().positionN + ")");
         }
         else done();
     }
 
-    public void invest(Double amount){
+    public void invest(Double amount) throws DoneExecuteException{
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         peekRegion region = territory.getCurrentRegionInfo(crew);
+        if(currentPlayer.budget() < 1) done();
         if(territory.isInBound(region) && !isRegionOfOpponent(region) && currentPlayer.budget() >= amount+1) {
-            currentPlayer.spend(amount+1);
+            currentPlayer.spend(amount);
             territory.invest(crew, region, amount);
         }
+        currentPlayer.spend(1);
     }
 
     public void collect(Double amount) throws DoneExecuteException{
@@ -295,9 +308,9 @@ public class internalOperator implements internalOperatorInterface {
         if(currentPlayer.budget() < 1) done();
         else if (region.deposit >= amount) {
             territory.collect(crew, amount);
-            currentPlayer.spend(1);
             currentPlayer.reciveDeposit(amount);
         }
+        currentPlayer.spend(1);
     }
 
     public void shoot(Double amount, int direction){

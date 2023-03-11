@@ -78,6 +78,7 @@ class player implements playerInterface {
 //        ownRegions.remove(region);
         if(region.Type.equals("cityCenter")) {
             this.status = "defeat";
+            System.err.println("lost city center");
         }
         return status;
     }
