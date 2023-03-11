@@ -16,7 +16,8 @@ public class internalOperator implements internalOperatorInterface {
     private LinkedList<player> players = new LinkedList<>();
     private LinkedList<Tree> constructionPlans = new LinkedList<>();
     private int totalPlayers = 0;
-    private int turn = 0;
+    private int totalTurn = 0;
+    private int realTurn = 0;
     private player currentPlayer = null;
 
     public internalOperator(HashMap<String, Double> variables) {
@@ -85,7 +86,7 @@ public class internalOperator implements internalOperatorInterface {
     @Override
     public int interest() {
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
-        return territory.getCurrentRegionInfo(crew).interestRate.intValue();
+        return territory.getCurrentRegionInfo(crew).real_InterestRate.intValue();
     }
 
     @Override
@@ -96,15 +97,17 @@ public class internalOperator implements internalOperatorInterface {
     public int random() { return ThreadLocalRandom.current().nextInt(0, 999); }
 
     private boolean isRegionOfOpponent(int m, int n){
-        int currentPlayer = turn%totalPlayers;
+        int currentPlayer = totalTurn %totalPlayers;
         peekRegion peek = territory.getInfoOfRegion(m, n);
-
+/*
         // out of scope
         if(peek.Type.equals("null"));
         // no owner
         else if(peek.playerOwnerIndex == -1);
         else if(peek.playerOwnerIndex != currentPlayer) return true;
-
+*/
+        if(!peek.Type.equals("null") && !(peek.playerOwnerIndex == -1) && peek.playerOwnerIndex != currentPlayer)
+            return true;
         return false;
     }
 
@@ -159,13 +162,15 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void NextTurn(){
-        turn++;
-        territory.nextTurn();
+        totalTurn++;
+        realTurn = (int) Math.round(totalTurn * 1.0/totalPlayers);
+        System.out.println(totalTurn + " " + realTurn);
         currentPlayer = currentPlayer();
         if(currentPlayer().isDefeat())  return;
+        territory.nextTurn(currentPlayer.getCityCrewInfo(), realTurn);
         currentPlayer.startTurn();
 
-        Iterator<Action.FinalActionState> currentPlan =  constructionPlans.get(turn%totalPlayers).iteratorRealTime();
+        Iterator<Action.FinalActionState> currentPlan =  constructionPlans.get(totalTurn %totalPlayers).iteratorRealTime();
         Action.FinalActionState currentAction;
 /*
         while(currentPlan.hasNext()){
@@ -216,7 +221,7 @@ public class internalOperator implements internalOperatorInterface {
 
     @Override
     public player currentPlayer() {
-        return players.get(turn%totalPlayers);
+        return players.get(totalTurn %totalPlayers);
     }
 
     public void done() throws DoneExecuteException {
@@ -225,20 +230,19 @@ public class internalOperator implements internalOperatorInterface {
 
     public void relocate() throws DoneExecuteException{
         peekCiryCrew currentCrew = currentPlayer.getCityCrewInfo();
-        currentPlayer.newCityCrew();
-        int cityM = currentPlayer.getCityCrewInfo().positionM;
-        int cityN = currentPlayer.getCityCrewInfo().positionN;
+        int cityM = currentPlayer.getCityCenterPositionM();
+        int cityN = currentPlayer.getCityCenterPositionN();
         int cityMDistance = cityM-currentCrew.positionM;
         int cityNDistance = cityN-currentCrew.positionN;
-        double distance = Math.sqrt(Math.pow(cityMDistance, 2)+Math.pow(cityNDistance, 2));
+        // need distance calculation
+        double distance = Math.round(Math.sqrt(Math.pow(cityMDistance, 2)+Math.pow(cityNDistance, 2)));
         double cost = 5*distance+10;
-        if(isRegionOfOpponent(currentCrew));
-        else if(cost > currentPlayer.budget());
-        else{
-            territory.relocate(territory.getInfoOfRegion(cityM, cityN), territory.getInfoOfRegion(currentCrew.positionM, currentCrew.positionN));
+        if(isRegionOfOpponent(currentCrew) || cost > currentPlayer.budget()) done();
+        else {
+            territory.relocate(currentCrew , territory.getInfoOfRegion(cityM, cityN), territory.getInfoOfRegion(currentCrew.positionM, currentCrew.positionN));
+            currentPlayer.relocate();
             currentPlayer.spend(cost);
         }
-        done();
     }
 
     public void move(int direction) throws DoneExecuteException{
@@ -277,13 +281,11 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void invest(Double amount){
-        peekRegion interestRegion = territory.getCurrentRegionInfo(currentPlayer.getCityCrewInfo());
-        if(!territory.isInBound(interestRegion));
-        else if(isRegionOfOpponent(interestRegion));
-        else if(amount > currentPlayer.budget());
-        else{
-            currentPlayer.spend(amount);
-            territory.invest(interestRegion, amount);
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
+        peekRegion region = territory.getCurrentRegionInfo(crew);
+        if(territory.isInBound(region) && !isRegionOfOpponent(region) && currentPlayer.budget() >= amount+1) {
+            currentPlayer.spend(amount+1);
+            territory.invest(crew, region, amount);
         }
     }
 
@@ -291,16 +293,15 @@ public class internalOperator implements internalOperatorInterface {
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         peekRegion region = territory.getInfoOfRegion(crew.positionM, crew.positionN);
         if(currentPlayer.budget() < 1) done();
-        else if (region.deposit < amount);
-        else{
+        else if (region.deposit >= amount) {
             territory.collect(crew, amount);
+            currentPlayer.spend(1);
             currentPlayer.reciveDeposit(amount);
         }
     }
 
     public void shoot(Double amount, int direction){
-        if(currentPlayer.budget() > amount+1) return;
-        currentPlayer.spend(1);
+        if(amount+1 > currentPlayer.budget()) return;
         int interestM = currentPlayer().getCityCrewInfo().positionM;
         int interestN = currentPlayer().getCityCrewInfo().positionM;
         switch (direction){
@@ -323,20 +324,21 @@ public class internalOperator implements internalOperatorInterface {
                 interestM-=interestN%2;
             }
         }
-        currentPlayer.spend(amount);
+        currentPlayer.spend(amount+1);
         peekRegion target = territory.getInfoOfRegion(interestM, interestN);
         if(territory.shoot(target, amount).equals("lostRegion")){
             player targetPlayer = players.get(target.playerOwnerIndex);
-            if(targetPlayer.lostRegion(target).equals("caseDefeat")){
-//                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1, -1.0);
-                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1);
-                Iterator<peekRegion> regions =  targetPlayer.getOwnRegions().iterator();
-                while(regions.hasNext()){
-                    peekRegion current = regions.next();
-                    ghostCrew.positionM = current.positionM;
-                    ghostCrew.positionN = current.positionN;
-                    territory.takeRegion(ghostCrew);
-                }
+            if(targetPlayer.lostRegion(target).equals("defeat")){
+                // need clear owner region
+                territory.clearOwnerRegionOf(targetPlayer.getCityCrewInfo());
+//                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1);
+//                Iterator<peekRegion> regions =  targetPlayer.getOwnRegions().iterator();
+//                while(regions.hasNext()){
+//                    peekRegion current = regions.next();
+//                    ghostCrew.positionM = current.positionM;
+//                    ghostCrew.positionN = current.positionN;
+//                    territory.takeRegion(ghostCrew);
+//                }
             }
         }
     }

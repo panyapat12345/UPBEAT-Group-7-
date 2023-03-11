@@ -27,6 +27,10 @@ public class Main {
         catch(Exception e){ e.printStackTrace(); }
 
         // use this
-        System.out.println(binding);
+//        System.out.println(binding);
+        System.out.println(Math.round(5.0));
+        System.out.println(Math.round(5.4));
+        System.out.println(Math.round(5.5));
+        System.out.println(Math.round(5.6));
     }
 }

@@ -30,7 +30,6 @@ class player implements playerInterface {
         this.budget = budget;
     }
 
-    // new method
     public void startTurn() {
         crew.startTurn(cityCenterPositionM, cityCenterPositionN);
     }
@@ -53,8 +52,12 @@ class player implements playerInterface {
     }
 
     public void newCityCrew(){
-//        crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN, budget);
         crew = new cityCrew(playerIndex, cityCenterPositionM, cityCenterPositionN);
+    }
+
+    public void relocate(){
+        cityCenterPositionM = crew.getCityCrewInfo().positionM;
+        cityCenterPositionN = crew.getCityCrewInfo().positionN;
     }
 
     public void moveCrew(peekRegion interestRegion) {
@@ -72,28 +75,26 @@ class player implements playerInterface {
     }
 
     public String lostRegion(peekRegion region){
-        ownRegions.remove(region);
-        if(region.Type == "cityCenter") this.status = "defeat";
-        return "caseDefeat";
+//        ownRegions.remove(region);
+        if(region.Type.equals("cityCenter")) {
+            this.status = "defeat";
+        }
+        return status;
     }
 
     public Set<peekRegion> getOwnRegions(){
         return ownRegions;
     }
+
+    public int getCityCenterPositionM(){ return cityCenterPositionM; }
+
+    public int getCityCenterPositionN(){ return cityCenterPositionN; }
 }
 
 class cityCrew{
     private int crewOfPlayer = -1;
     private int positionM = -1;
     private int positionN = -1;
-//    private Double budGet = -1.0;
-
-//    cityCrew(int playerIndex, int PositionN, int PositionM, Double budGet) {
-//        this.crewOfPlayer = playerIndex;
-//        this.positionM = PositionM;
-//        this.positionN = PositionN;
-//        this.budGet = budGet;
-//    }
 
     cityCrew(int playerIndex, int PositionN, int PositionM) {
         this.crewOfPlayer = playerIndex;
@@ -112,7 +113,6 @@ class cityCrew{
     }
 
     public peekCiryCrew getCityCrewInfo(){
-//        return new peekCiryCrew(crewOfPlayer, positionM, positionN, budGet);
         return new peekCiryCrew(crewOfPlayer, positionM, positionN);
 
     }
@@ -122,14 +122,6 @@ class peekCiryCrew implements cityCrewInterface{
     public int crewOfPlayer;
     public int positionM;
     public int positionN;
-//    public Double budGet;
-
-//    public peekCiryCrew(int crewOfPlayer, int positionM, int positionN, Double budGet){
-//        this.crewOfPlayer = crewOfPlayer;
-//        this.positionM = positionM;
-//        this.positionN = positionN;
-//        this.budGet = budGet;
-//    }
 
     public peekCiryCrew(int crewOfPlayer, int positionM, int positionN){
         this.crewOfPlayer = crewOfPlayer;
