@@ -12,7 +12,7 @@ interface playerInterface {
 interface cityCrewInterface {
 }
 
-class player implements playerInterface {
+public class player implements playerInterface {
     private int playerIndex = -1;
     private HashMap<String, Double> variablesOfConstructionPlan;
     private int cityCenterPositionM ;
