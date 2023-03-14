@@ -5,7 +5,6 @@ import java.util.Set;
 
 public class player implements playerInterface {
     private int playerIndex = -1;
-    private HashMap<String, Double> variablesOfConstructionPlan;
     private int cityCenterPositionM ;
     private int cityCenterPositionN;
     private Double budget;
@@ -15,7 +14,6 @@ public class player implements playerInterface {
 
     public player(int Id, int cityCenterPositionM, int cityCenterPositionN, double budget){
         playerIndex = Id;
-        variablesOfConstructionPlan = new HashMap<>();
         this.cityCenterPositionM = cityCenterPositionM;
         this.cityCenterPositionN = cityCenterPositionN;
         this.budget = budget;
@@ -56,14 +54,6 @@ public class player implements playerInterface {
     }
 
     public void reciveDeposit(Double amount) { budget+=amount; }
-
-    public Double getConstructionPlanVarible(String name){
-        return variablesOfConstructionPlan.get(name);
-    }
-
-    public void setConstructionPlanVarible(String name, Double var){
-        variablesOfConstructionPlan.put(name, var);
-    }
 
     public String lostRegion(peekRegion region){
 //        ownRegions.remove(region);

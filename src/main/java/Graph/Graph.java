@@ -71,6 +71,70 @@ public class Graph {
             this.neighbours = neighbours;
         }
 
+        public GraphNode up(){
+            if (row != 0)
+                return this.parentGraph[row - 1][col];
+            return null;
+        }
+
+        public GraphNode down(){
+            if (row != this.parentGraph.length - 1)
+                return this.parentGraph[row + 1][col];
+            return null;
+        }
+
+        public GraphNode upLeft(){
+            if (col != 0) {
+                if(col % 2 == 0)
+                    return this.parentGraph[row][col - 1];
+                else if (row != 0)
+                    return this.parentGraph[row - 1][col - 1];
+            }
+            return null;
+        }
+
+        public GraphNode downLeft(){
+            if (col != 0) {
+                if (col % 2 == 0 && row != this.parentGraph.length - 1)
+                    return this.parentGraph[row + 1][col - 1];
+                else if (col % 2 != 0)
+                    return this.parentGraph[row][col - 1];
+            }
+            return null;
+        }
+
+        public GraphNode upRight(){
+            if (col != this.parentGraph[row].length - 1) {
+                if(col % 2 == 0)
+                    return this.parentGraph[row][col + 1];
+                else if (row != 0)
+                    return this.parentGraph[row - 1][col + 1];
+            }
+            return null;
+        }
+
+        public GraphNode downRight(){
+            if (col != this.parentGraph[row].length - 1) {
+                if (col % 2 == 0 && row != this.parentGraph.length - 1)
+                    return this.parentGraph[row + 1][col + 1];
+                else if (col % 2 != 0)
+                    return this.parentGraph[row][col + 1];
+            }
+            return null;
+        }
+
+        public GraphNode getAtDirection(String direction){
+            switch (direction) {
+                case"up" -> { return this.up(); }
+                case"upright" -> { return this.upRight(); }
+                case"upleft" -> { return this.upLeft(); }
+                case"down" -> { return this.down(); }
+                case"downleft" -> { return this.downLeft(); }
+                case"downright" -> { return this.downRight(); }
+                default -> { return null; }
+            }
+        }
+
         public LinkedList<GraphNode> getNeighbours() {
             return neighbours;
         }
@@ -182,7 +246,24 @@ public class Graph {
 
     public static void main(String[] args){
         Graph.instance(6, 8);
-        System.out.println("result " + Graph.instance().findShortestDistance(1,1, 5, 4));
+//        System.out.println("result " + Graph.instance().findShortestDistance(1,1, 5, 4));
 //        System.out.println(Graph.instance().getGraph()[1][1].neighbours);
+        int row = 0, col = 0;
+        System.out.println("up :" + Graph.instance().getGraph()[row][col].up());
+        System.out.println("down :" + Graph.instance().getGraph()[row][col].down());
+        System.out.println("upLeft :" + Graph.instance().getGraph()[row][col].upLeft());
+        System.out.println("downLeft :" + Graph.instance().getGraph()[row][col].downLeft());
+        System.out.println("upRight :" + Graph.instance().getGraph()[row][col].upRight());
+        System.out.println("downRight :" + Graph.instance().getGraph()[row][col].downRight());
+        System.out.println();
+
+        System.out.println("up :" + Graph.instance().getGraph()[row][col].getAtDirection("up"));
+        System.out.println("down :" + Graph.instance().getGraph()[row][col].getAtDirection("down"));
+        System.out.println("upLeft :" + Graph.instance().getGraph()[row][col].getAtDirection("upleft"));
+        System.out.println("downLeft :" + Graph.instance().getGraph()[row][col].getAtDirection("downleft"));
+        System.out.println("upRight :" + Graph.instance().getGraph()[row][col].getAtDirection("upright"));
+        System.out.println("downRight :" + Graph.instance().getGraph()[row][col].getAtDirection("downright"));
+        System.out.println("empty :" + Graph.instance().getGraph()[row][col].getAtDirection(""));
+
     }
 }
