@@ -6,46 +6,14 @@ import java.util.List;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
 
-interface territoryInterface {
-    peekRegion getCurrentRegionInfo(int m, int n);
-    boolean isInBound(int M, int N);
-    peekRegion getInfoOfRegion(int M, int N);
-    String shoot(peekRegion region, Double amount);
-    territoryDirectionIterator getTerritoryDirectionIterator(int direction, int interestM, int interestN);
-    peekRegion getCurrentRegionInfo(peekCiryCrew crew);
-    void invest(peekCiryCrew crew, peekRegion region, Double amount);
-}
-
-interface RegionInterface{
-
-}
-
-class territoryDirectionIterator{
-    List<peekRegion> listRegion = null;
-    int index = 0;
-
-    territoryDirectionIterator(List<peekRegion> listRegion) {
-        this.listRegion = listRegion;
-    }
-
-    peekRegion next(){
-        if(index < listRegion.size()){
-            peekRegion current = listRegion.get(index);
-            index++;
-            return current;
-        }
-        else return new peekRegion(-1, 0.0, 0.0, 0.0, "null", -1, -1);
-    }
-}
-
-class Territory implements territoryInterface {
+public class Territory implements territoryInterface {
     private int m = 0;
     private int n = 0;
     private  int turn = 0;
     private region[][] regions = null;
     HashMap<String, Double> Variables = null;
 
-    Territory(HashMap<String, Double> Variables) {
+    public Territory(HashMap<String, Double> Variables) {
         this.m = Variables.get("m").intValue();
         this.n = Variables.get("n").intValue();
         regions = new region[m][n];
@@ -175,24 +143,5 @@ class Territory implements territoryInterface {
         }
         // debug
         System.err.println("return owner : " + returnOwner);
-    }
-}
-
-class peekRegion {
-    public int playerOwnerIndex;
-    public Double deposit;
-    public Double MaxDeposit;
-    public Double real_InterestRate;
-    public String Type;
-    public int positionM;
-    public int positionN;
-    peekRegion(int PlayerOwnerIndex, Double Deposit, Double MaxDeposit, Double real_InterestRate, String Type, int M, int N){
-        this.playerOwnerIndex = PlayerOwnerIndex;
-        this.deposit = Deposit;
-        this.MaxDeposit = MaxDeposit;
-        this.real_InterestRate = real_InterestRate;
-        this.Type = Type;
-        this.positionM = M;
-        this.positionN = N;
     }
 }

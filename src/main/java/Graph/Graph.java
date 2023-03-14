@@ -186,4 +186,3 @@ public class Graph {
 //        System.out.println(Graph.instance().getGraph()[1][1].neighbours);
     }
 }
-

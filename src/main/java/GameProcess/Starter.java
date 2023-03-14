@@ -3,8 +3,8 @@ package GameProcess;
 import java.io.File;
 import java.util.*;
 
-class Starter {
-    Starter() throws Exception {
+public class Starter {
+    public Starter() throws Exception {
         HashMap<String, Double> Variables = new HashMap<>();
         HashSet<String> acceptVariableNames = new HashSet<>(Set.of(
                 "m"

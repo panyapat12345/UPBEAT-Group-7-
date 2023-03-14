@@ -34,7 +34,7 @@ public class region {
         this.type = "empty";
     }
 
-    region(int M, int N, Double MaxDeposit, Double init_InterestRate) {
+    public region(int M, int N, Double MaxDeposit, Double init_InterestRate) {
         this.positionM = M;
         this.positionN = N;
         this.playerOwnerIndex = -1;
