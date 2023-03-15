@@ -1,5 +1,7 @@
 package GameProcess;
 
+import GameProcess.Display.DisplayPlayer;
+
 import java.util.Set;
 
 public class player implements playerInterface {
@@ -16,6 +18,7 @@ public class player implements playerInterface {
         this.cityCenterPositionM = cityCenterPositionM;
         this.cityCenterPositionN = cityCenterPositionN;
         this.budget = budget;
+        newCityCrew();
     }
 
     public void startTurn() {
@@ -24,7 +27,7 @@ public class player implements playerInterface {
 
     @Override
     public boolean isDefeat() {
-        return !status.equals("alive");
+        return status.equals("defeat");
     }
 
     @Override
@@ -32,7 +35,9 @@ public class player implements playerInterface {
         return budget.intValue();
     }
 
-    public void spend(double amount) { budget-=amount; }
+    public void spend(double amount) { budget -= amount; }
+
+    public void receiveDeposit(double amount) { budget += amount; }
 
     @Override
     public peekCiryCrew getCityCrewInfo() {
@@ -44,15 +49,14 @@ public class player implements playerInterface {
     }
 
     public void relocate(){
-        cityCenterPositionM = crew.getCityCrewInfo().positionM;
-        cityCenterPositionN = crew.getCityCrewInfo().positionN;
+        peekCiryCrew crew = this.crew.getCityCrewInfo();
+        cityCenterPositionM = crew.positionM;
+        cityCenterPositionN = crew.positionN;
     }
 
-    public void moveCrew(peekRegion interestRegion) {
-        crew.move(interestRegion);
+    public void moveCrew(peekRegion destinationRegion) {
+        crew.move(destinationRegion);
     }
-
-    public void reciveDeposit(double amount) { budget+=amount; }
 
     public String lostRegion(peekRegion region){
 //        ownRegions.remove(region);
@@ -70,4 +74,8 @@ public class player implements playerInterface {
     public int getCityCenterPositionM(){ return cityCenterPositionM; }
 
     public int getCityCenterPositionN(){ return cityCenterPositionN; }
+
+    public DisplayPlayer getDisplay(){
+        return new DisplayPlayer(playerIndex, cityCenterPositionM, cityCenterPositionN, budget.intValue(), crew.getDisplay(), status);
+    }
 }

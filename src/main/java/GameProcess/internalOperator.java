@@ -2,16 +2,19 @@ package GameProcess;
 import AST.Action;
 import AST.PlanTree;
 import AST.Tree;
+import GameProcess.Display.DisplayCityCrew;
+import GameProcess.Display.DisplayPlayer;
+import GameProcess.Display.DisplayRegion;
 import Graph.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
-import Exception.DoneExecuteException;
+import Exception.*;
 
 public class internalOperator implements internalOperatorInterface {
     private static internalOperator instance;
-    HashMap<String, Double> configVals;
+    private HashMap<String, Double> configVals;
     private Territory territory;
     private LinkedList<player> players = new LinkedList<>();
     private LinkedList<Tree> constructionPlans = new LinkedList<>();
@@ -51,17 +54,16 @@ public class internalOperator implements internalOperatorInterface {
         return instance;
     }
 
-    public void addPlayer(String constructionPlan) {
+    public void addPlayer(String constructionPlan) throws SyntaxError{
         int cityCenterPositionM = 50, cityCenterPositionN = 50;
         player newPlayer = new player(totalPlayers, cityCenterPositionM, cityCenterPositionN, configVals.get("init_budget"));
         totalPlayers++;
-        newPlayer.newCityCrew();
         territory.newCityCenter(newPlayer.getCityCrewInfo());
         players.add(newPlayer);
         Tree tree = null;
         try{ tree = new PlanTree(constructionPlan); }
         catch (Exception e) {
-            System.out.println(e);
+            throw e;
         }
         constructionPlans.add(tree);
         if(totalPlayers == 1) currentPlayer = currentPlayer();
@@ -231,7 +233,7 @@ public class internalOperator implements internalOperatorInterface {
         System.err.println("Turn : " + realTurn);
         currentPlayer = currentPlayer();
         if(currentPlayer().isDefeat())  return;
-        territory.nextTurn(currentPlayer.getCityCrewInfo(), realTurn);
+        territory.startTurn(currentPlayer.getCityCrewInfo(), realTurn);
         currentPlayer.startTurn();
 
         Iterator<Action.FinalActionState> currentPlan =  constructionPlans.get(totalTurn %totalPlayers).iteratorRealTime();
@@ -351,7 +353,7 @@ public class internalOperator implements internalOperatorInterface {
 
         if(territory.isInBound(region) && isOwnerRegion(region) && region.deposit >= amount) {
             territory.collect(crew, amount);
-            currentPlayer.reciveDeposit(amount);
+            currentPlayer.receiveDeposit(amount);
             if(region.deposit == amount && currentPlayer.lostRegion(region).equals("defeat")){
                 territory.clearOwnerRegionOf(crew);
             }
@@ -397,9 +399,23 @@ public class internalOperator implements internalOperatorInterface {
         }
     }
 
-    public void takeRegion(){
-        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
-        peekRegion region = territory.getInfoOfRegion(crew.positionM, crew.positionN);
-        if(region.playerOwnerIndex == -1) territory.takeRegion(crew);
+    public DisplayPlayer[] getAllPlayers(){
+        DisplayPlayer[] result = new DisplayPlayer[players.size()];
+        for(int i=0; i<players.size(); i++){
+            result[i] = players.get(i).getDisplay();
+        }
+        return result;
+    }
+
+    public DisplayPlayer getCurrentPlayer(){
+        return currentPlayer.getDisplay();
+    }
+
+    public DisplayRegion[][] getAllTerritory(){
+        return territory.getAllRegion();
+    }
+
+    public DisplayRegion[][] getCurrentTerritory(){
+        return territory.getAllRegion(currentPlayer.getCityCrewInfo());
     }
 }

@@ -9,8 +9,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,7 +61,7 @@ class callVariableTest {
         }
     }
 
-    private void GameSystemTest(Path path){
+    private void GameSystemTest(Path path) throws SyntaxError{
         internalOperator game = new internalOperator(getConfigVals());
         game.addPlayer(readFromFile(path).toString());
         game.NextTurn();

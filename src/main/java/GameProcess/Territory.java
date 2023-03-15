@@ -1,5 +1,7 @@
 package GameProcess;
 
+import GameProcess.Display.DisplayRegion;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +13,7 @@ public class Territory implements territoryInterface {
     private int n = 0;
     private  int turn = 0;
     private region[][] regions = null;
-    HashMap<String, Double> configVals = null;
+    private HashMap<String, Double> configVals = null;
 
     public Territory(HashMap<String, Double> configVals) {
         this.m = configVals.get("m").intValue();
@@ -29,8 +31,8 @@ public class Territory implements territoryInterface {
         return ((M >= 0 && N >= 0) && (M < m && N < n));
     }
 
-    public boolean isInBound(peekRegion target) {
-        return isInBound(target.positionM, target.positionN);
+    public boolean isInBound(peekRegion region) {
+        return isInBound(region.positionM, region.positionN);
     }
 
     public peekRegion getInfoOfRegion(int M, int N) {
@@ -95,20 +97,20 @@ public class Territory implements territoryInterface {
 
     public void relocate(peekCiryCrew crew, peekRegion from, peekRegion to){
         regions[to.positionM][to.positionN].returnOwner();
-        regions[to.positionM][to.positionN].newCityCenter(crew, configVals.get("init_center_dep"));
+        regions[to.positionM][to.positionN].newCityCenter(crew, regions[to.positionM][to.positionN].deposit());
         regions[from.positionM][from.positionN].returnOwner();
         regions[from.positionM][from.positionN].take(crew);
         // debug
-        System.err.println("relocate citycenter from (" + from.positionM + ", " + from.positionN + ") to (" + to.positionM + ", " +to.positionN + ")");
-    }
-
-    public peekRegion getCurrentRegionInfo(peekCiryCrew crew) {
-        return getCurrentRegionInfo(crew.positionM, crew.positionN);
+        System.err.println("relocate city center from (" + from.positionM + ", " + from.positionN + ") to (" + to.positionM + ", " +to.positionN + ")");
     }
 
     @Override
     public peekRegion getCurrentRegionInfo(int m, int n) {
         return regions[m][n].getInfo(m, n, turn);
+    }
+
+    public peekRegion getCurrentRegionInfo(peekCiryCrew crew) {
+        return getCurrentRegionInfo(crew.positionM, crew.positionN);
     }
 
     public void invest(peekCiryCrew crew, peekRegion region, double amount) {
@@ -119,7 +121,7 @@ public class Territory implements territoryInterface {
         System.err.println("(" + region.positionM + ", " + region.positionN + ") deposit from " + oldDeposit + " to " + regions[region.positionM][region.positionN].deposit());
     }
 
-    public void nextTurn(peekCiryCrew crew, int turn){
+    public void startTurn(peekCiryCrew crew, int turn){
         this.turn = turn;
         for(int i = 0; i < m; i++){
             for(int j = 0; j < n; j++){
@@ -143,5 +145,31 @@ public class Territory implements territoryInterface {
         }
         // debug
         System.err.println("return owner : " + returnOwner);
+    }
+
+    public DisplayRegion[][] getAllRegion(){
+        DisplayRegion[][] result = new DisplayRegion[m][n];
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(regions[i][j].getOwner() != -1)
+                    result[i][j] = regions[i][j].getDisplay();
+                else
+                    result[i][j] = null;
+            }
+        }
+        return result;
+    }
+
+    public DisplayRegion[][] getAllRegion(peekCiryCrew crew){
+        DisplayRegion[][] result = new DisplayRegion[m][n];
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(regions[i][j].getOwner() == crew.crewOfPlayer)
+                    result[i][j] = regions[i][j].getDisplay();
+                else
+                    result[i][j] = null;
+            }
+        }
+        return result;
     }
 }

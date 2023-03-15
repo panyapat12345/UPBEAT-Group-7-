@@ -1,5 +1,7 @@
 package GameProcess;
 
+import GameProcess.Display.DisplayRegion;
+
 public class region {
     private int playerOwnerIndex = 0;
     private Double deposit = 0.0;
@@ -9,9 +11,21 @@ public class region {
     private int positionM = 0;
     private int positionN = 0;
 
+    public region(int M, int N, double MaxDeposit, double init_InterestRate) {
+        this.positionM = M;
+        this.positionN = N;
+        this.playerOwnerIndex = -1;
+        this.maxDeposit = MaxDeposit;
+        this.init_InterestRate = init_InterestRate;
+        this.type = "empty";
+    }
     public int getOwner() { return playerOwnerIndex; }
-    public void takeDeposit(Double amount) { deposit-=amount; }
     public int deposit() { return deposit.intValue(); }
+    public void takeDeposit(double amount) { deposit -= amount; }
+    public void addDeposit(double amount) {
+        deposit += amount;
+    }
+
     public String beAttack(double amount) {
         deposit = Math.max(0, deposit - amount);
         if(deposit < 1){
@@ -22,21 +36,19 @@ public class region {
         }
         return "lostDeposit";
     }
+
     public void take(peekCiryCrew crew){
         this.playerOwnerIndex = crew.crewOfPlayer;
     }
 
-    public void returnOwner() {
-        this.playerOwnerIndex = -1;
-        this.type = "empty";
+    public void newCityCenter(peekCiryCrew crew, double init_deposit){
+        this.playerOwnerIndex = crew.crewOfPlayer;
+        this.type = "cityCenter";
+        this.deposit = init_deposit;
     }
 
-    public region(int M, int N, double MaxDeposit, double init_InterestRate) {
-        this.positionM = M;
-        this.positionN = N;
+    public void returnOwner() {
         this.playerOwnerIndex = -1;
-        this.maxDeposit = MaxDeposit;
-        this.init_InterestRate = init_InterestRate;
         this.type = "empty";
     }
 
@@ -45,17 +57,13 @@ public class region {
         return new peekRegion(playerOwnerIndex, deposit, maxDeposit, calculateRealInterestRate(turn), type, m, n);
     }
 
-    public void addDeposit(double amount) {
-        deposit +=amount;
-    }
-
     public double calculateRealInterestRate(int turn) {
         // b * log10 d * ln t
 //        System.err.println(init_InterestRate + " * " + Math.log10(deposit) + " * " + Math.log(turn));
         return init_InterestRate * Math.log10(deposit) * Math.log(turn);
     }
 
-    public double profit(int turn) { return (deposit* calculateRealInterestRate(turn) /100.0); }
+    public double profit(int turn) { return (deposit * calculateRealInterestRate(turn)/100.0); }
 
     public void calculateInterest(int turn){
         double profit = profit(turn);
@@ -67,9 +75,7 @@ public class region {
         }
     }
 
-    public void newCityCenter(peekCiryCrew crew, double init_deposit){
-        this.playerOwnerIndex = crew.crewOfPlayer;
-        this.type = "cityCenter";
-        this.deposit = init_deposit;
+    public DisplayRegion getDisplay(){
+        return new DisplayRegion(playerOwnerIndex, type, deposit);
     }
 }

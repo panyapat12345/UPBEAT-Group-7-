@@ -1,5 +1,7 @@
 package GameProcess;
 
+import GameProcess.Display.DisplayCityCrew;
+
 public class cityCrew{
     private int crewOfPlayer = -1;
     private int positionM = -1;
@@ -23,6 +25,9 @@ public class cityCrew{
 
     public peekCiryCrew getCityCrewInfo(){
         return new peekCiryCrew(crewOfPlayer, positionM, positionN);
+    }
 
+    public DisplayCityCrew getDisplay(){
+        return new DisplayCityCrew(positionM, positionN);
     }
 }
