@@ -10,13 +10,11 @@ public class region {
     private int positionN = 0;
 
     public int getOwner() { return playerOwnerIndex; }
-    public int invest(player player, double amount) { return 0; }
     public void takeDeposit(Double amount) { deposit-=amount; }
     public int deposit() { return deposit.intValue(); }
-    public int interest(player player, double amount) { return (int)(deposit * init_InterestRate / 100.0); }
-    public String beAttack(Double amount) {
-        deposit-=amount;
-        if(deposit < 0){
+    public String beAttack(double amount) {
+        deposit = Math.max(0, deposit - amount);
+        if(deposit < 1){
             this.playerOwnerIndex = -1;
             this.deposit = 0.0;
             this.type = "empty";
@@ -24,7 +22,6 @@ public class region {
         }
         return "lostDeposit";
     }
-
     public void take(peekCiryCrew crew){
         this.playerOwnerIndex = crew.crewOfPlayer;
     }
@@ -34,7 +31,7 @@ public class region {
         this.type = "empty";
     }
 
-    public region(int M, int N, Double MaxDeposit, Double init_InterestRate) {
+    public region(int M, int N, double MaxDeposit, double init_InterestRate) {
         this.positionM = M;
         this.positionN = N;
         this.playerOwnerIndex = -1;
@@ -48,7 +45,7 @@ public class region {
         return new peekRegion(playerOwnerIndex, deposit, maxDeposit, calculateRealInterestRate(turn), type, m, n);
     }
 
-    public void addDeposit(Double amount) {
+    public void addDeposit(double amount) {
         deposit +=amount;
     }
 
@@ -58,8 +55,16 @@ public class region {
         return init_InterestRate * Math.log10(deposit) * Math.log(turn);
     }
 
+    public double profit(int turn) { return (deposit* calculateRealInterestRate(turn) /100.0); }
+
     public void calculateInterest(int turn){
-        deposit+=(deposit* calculateRealInterestRate(turn) /100.0);
+        double profit = profit(turn);
+        double gap = maxDeposit - deposit;
+        if(profit > gap){
+            deposit += gap;
+        } else {
+            deposit += profit;
+        }
     }
 
     public void newCityCenter(peekCiryCrew crew, double init_deposit){

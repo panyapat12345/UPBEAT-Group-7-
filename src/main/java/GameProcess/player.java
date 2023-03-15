@@ -1,6 +1,5 @@
 package GameProcess;
 
-import java.util.HashMap;
 import java.util.Set;
 
 public class player implements playerInterface {
@@ -53,7 +52,7 @@ public class player implements playerInterface {
         crew.move(interestRegion);
     }
 
-    public void reciveDeposit(Double amount) { budget+=amount; }
+    public void reciveDeposit(double amount) { budget+=amount; }
 
     public String lostRegion(peekRegion region){
 //        ownRegions.remove(region);

@@ -11,7 +11,7 @@ import Exception.DoneExecuteException;
 
 public class internalOperator implements internalOperatorInterface {
     private static internalOperator instance;
-    HashMap<String, Double> variables;
+    HashMap<String, Double> configVals;
     private Territory territory;
     private LinkedList<player> players = new LinkedList<>();
     private LinkedList<Tree> constructionPlans = new LinkedList<>();
@@ -20,24 +20,31 @@ public class internalOperator implements internalOperatorInterface {
     private int realTurn = 0;
     private player currentPlayer = null;
 
-    public internalOperator(HashMap<String, Double> variables) {
-        this.variables = variables;
-        territory = new Territory(variables);
-        Graph.instance(variables.get("m").intValue(), variables.get("n").intValue());
+    public internalOperator(HashMap<String, Double> configVals) {
+        this.configVals = configVals;
+        init();
         instance = this;
-        /*
-        StringBuilder constructionPlan = new StringBuilder();
-        FileReader constructionPlanReader = null;
-        try {
-            constructionPlanReader = new FileReader("src/ConstructionPlan.txt");
-            int i;
-            while((i = constructionPlanReader.read()) != -1) constructionPlan.append((char)i);
-            constructionPlanReader.close();
-        }
-        catch (Exception e) { e.printStackTrace(); }
+    }
 
-        addPlayer(constructionPlan.toString());
-        */
+    public internalOperator(double m, double n, double init_plan_min, double init_plan_sec, double init_budget, double init_center_dep, double plan_rev_min, double plan_rev_sec, double rev_cost, double max_dep, double interest_pct){
+        configVals.put("m", m);
+        configVals.put("n", n);
+        configVals.put("init_plan_min", init_plan_min);
+        configVals.put("init_plan_sec", init_plan_sec);
+        configVals.put("init_budget", init_budget);
+        configVals.put("init_center_dep", init_center_dep);
+        configVals.put("plan_rev_min", plan_rev_min);
+        configVals.put("plan_rev_sec", plan_rev_sec);
+        configVals.put("rev_cost", rev_cost);
+        configVals.put("max_dep", max_dep);
+        configVals.put("interest_pct", interest_pct);
+        init();
+        instance = this;
+    }
+
+    private void init(){
+        territory = new Territory(configVals);
+        Graph.instance(configVals.get("m").intValue(), configVals.get("n").intValue());
     }
 
     public static internalOperator instance(){
@@ -46,7 +53,7 @@ public class internalOperator implements internalOperatorInterface {
 
     public void addPlayer(String constructionPlan) {
         int cityCenterPositionM = 50, cityCenterPositionN = 50;
-        player newPlayer = new player(totalPlayers, cityCenterPositionM, cityCenterPositionN, variables.get("init_budget"));
+        player newPlayer = new player(totalPlayers, cityCenterPositionM, cityCenterPositionN, configVals.get("init_budget"));
         totalPlayers++;
         newPlayer.newCityCrew();
         territory.newCityCenter(newPlayer.getCityCrewInfo());
@@ -60,9 +67,9 @@ public class internalOperator implements internalOperatorInterface {
         if(totalPlayers == 1) currentPlayer = currentPlayer();
     }
 
-    public HashMap<String, Double> GetVariables(){ return variables; }
-    public int rows() { return variables.get("m").intValue(); }
-    public int cols() { return variables.get("n").intValue(); }
+    public HashMap<String, Double> GetConfigVals(){ return configVals; }
+    public int rows() { return configVals.get("m").intValue(); }
+    public int cols() { return configVals.get("n").intValue(); }
 
     @Override
     public int currow() {
@@ -93,32 +100,41 @@ public class internalOperator implements internalOperatorInterface {
 
     @Override
     public int maxDeposit() {
-        return variables.get("max_dep").intValue();
+        return configVals.get("max_dep").intValue();
     }
 
     public int random() { return ThreadLocalRandom.current().nextInt(0, 999); }
 
-    private boolean isRegionOfOpponent(int m, int n){
+    private boolean isOpponentRegion(int m, int n){
         int currentPlayer = totalTurn %totalPlayers;
-        peekRegion peek = territory.getInfoOfRegion(m, n);
-/*
-        // out of scope
-        if(peek.Type.equals("null"));
-        // no owner
-        else if(peek.playerOwnerIndex == -1);
-        else if(peek.playerOwnerIndex != currentPlayer) return true;
-*/
-        if(!peek.Type.equals("null") && !(peek.playerOwnerIndex == -1) && peek.playerOwnerIndex != currentPlayer)
+        peekRegion region = territory.getInfoOfRegion(m, n);
+        if(!region.Type.equals("null") && !(region.playerOwnerIndex == -1) && region.playerOwnerIndex != currentPlayer)
             return true;
         return false;
     }
 
-    private boolean isRegionOfOpponent(peekRegion region){
-        return isRegionOfOpponent(region.positionM, region.positionN);
+    private boolean isOpponentRegion(peekRegion region){
+        return isOpponentRegion(region.positionM, region.positionN);
     }
 
-    private boolean isRegionOfOpponent(peekCiryCrew crew){
-        return isRegionOfOpponent(crew.positionM, crew.positionN);
+    private boolean isOpponentRegion(peekCiryCrew crew){
+        return isOpponentRegion(crew.positionM, crew.positionN);
+    }
+
+    private boolean isOwnerRegion(int m, int n){
+        int currentPlayer = totalTurn %totalPlayers;
+        peekRegion region = territory.getInfoOfRegion(m, n);
+        if (!region.Type.equals("null") && region.playerOwnerIndex == currentPlayer)
+            return true;
+        return false;
+    }
+
+    private boolean isOwnerRegion(peekRegion region){
+        return isOwnerRegion(region.positionM, region.positionN);
+    }
+
+    private boolean isOwnerRegion(peekCiryCrew crew){
+        return isOwnerRegion(crew.positionM, crew.positionN);
     }
 
     @Override
@@ -144,7 +160,7 @@ public class internalOperator implements internalOperatorInterface {
                 if(current[i-1] == null) continue;
                 peekRegion region = territory.getInfoOfRegion(current[i-1].getRow(), current[i-1].getCol());
                 if(region.playerOwnerIndex == -1)  continue;
-                else if (isRegionOfOpponent(region)){
+                else if (isOpponentRegion(region)){
                     return distance*10 + i;
                 }
             }
@@ -186,7 +202,7 @@ public class internalOperator implements internalOperatorInterface {
                 previous = current;
                 peekRegion region = territory.getInfoOfRegion(current.getRow(), current.getCol());
                 if(region.playerOwnerIndex == -1)  continue;
-                else if (isRegionOfOpponent(region)){
+                else if (isOpponentRegion(region)){
                     return (100*i)+(int)(Math.floor(Math.log10(region.deposit)));
                 }
             } else return 0;
@@ -201,7 +217,7 @@ public class internalOperator implements internalOperatorInterface {
         for(int i = 0; true; i++){
             current = itr.next();
             if(current.Type.equals("null")) break;
-            else if(isRegionOfOpponent(current.positionM, current.positionN)) {
+            else if(isOpponentRegion(current.positionM, current.positionN)) {
                 return (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).deposit)));
             }
         }
@@ -236,30 +252,15 @@ public class internalOperator implements internalOperatorInterface {
     public void actionProcess(Action.FinalActionState currentAction) throws DoneExecuteException{
         String key = currentAction.getAction();
         String direction = currentAction.getDirection();
-//        int directionInt = stringDirToInt(direction);
         int value = currentAction.getValue();
         switch (key) {
             case "done" -> done();
             case "relocate" -> relocate();
             case "move" -> move(direction);
-            case "invest" -> invest((double) value);
-            case "collect" -> collect((double) value);
-            case "shoot" -> shoot((double) value, direction);
+            case "invest" -> invest(value);
+            case "collect" -> collect(value);
+            case "shoot" -> shoot(value, direction);
         }
-    }
-
-    private int stringDirToInt(String direction){
-        int directionInt;
-        switch (direction) {
-            case"up" -> directionInt = 4;
-            case"upright" -> directionInt = 2;
-            case"downright" -> directionInt = 3;
-            case"down" -> directionInt = 1;
-            case"downleft" -> directionInt = 5;
-            case"upleft" -> directionInt = 6;
-            default -> directionInt = 0;
-        }
-        return directionInt;
     }
 
     @Override
@@ -272,24 +273,26 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     public void relocate() throws DoneExecuteException{
-        peekCiryCrew currentCrew = currentPlayer.getCityCrewInfo();
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         int curM = currentPlayer.getCityCenterPositionM();
         int curN = currentPlayer.getCityCenterPositionN();
         // need distance calculation
-        double distance = Graph.instance().findShortestDistance(curM, curN, currentCrew.positionM, currentCrew.positionN);
+        double distance = Graph.instance().findShortestDistance(curM, curN, crew.positionM, crew.positionN);
         double cost = 5*distance+10;
-        if(isRegionOfOpponent(currentCrew) || cost > currentPlayer.budget()) done();
+        if(!isOwnerRegion(crew) || cost > currentPlayer.budget()) done();
         else {
-            territory.relocate(currentCrew, territory.getInfoOfRegion(currentCrew.positionM, currentCrew.positionN), territory.getInfoOfRegion(curM, curN));
+            territory.relocate(crew, territory.getInfoOfRegion(curM, curN), territory.getInfoOfRegion(crew.positionM, crew.positionN));
             currentPlayer.relocate();
             currentPlayer.spend(cost);
         }
     }
 
     public void move(String direction) throws DoneExecuteException{
-        int interestM = currentPlayer().getCityCrewInfo().positionM;
-        int interestN = currentPlayer().getCityCrewInfo().positionN;
-        int oldM = interestM, oldN = interestN;
+        if(currentPlayer.budget() < 1)  done();
+        currentPlayer.spend(1);
+
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
+        int oldM = crew.positionM, oldN = crew.positionN;
 //        switch (direction){
 //            case (1) -> interestM++;
 //            case (2) -> {
@@ -310,49 +313,57 @@ public class internalOperator implements internalOperatorInterface {
 //                interestM-=interestN%2;
 //            }
 //        }
-        Graph.GraphNode node = Graph.instance().getGraph()[interestM][interestN].getAtDirection(direction);
+        Graph.GraphNode node = Graph.instance().getGraph()[crew.positionM][crew.positionN].getAtDirection(direction);
         if(node == null) return;
 
-//        if(!territory.isInBound(interestRegion) || isRegionOfOpponent(interestRegion)) return;
-        peekRegion interestRegion = territory.getCurrentRegionInfo(node.getRow(), node.getCol());
-        if (isRegionOfOpponent(interestRegion))    return;
-        else if (currentPlayer.budget() > 0.0) {
-            currentPlayer.moveCrew(interestRegion);
+        peekRegion destinationRegion = territory.getCurrentRegionInfo(node.getRow(), node.getCol());
+        if (isOpponentRegion(destinationRegion))    return;
+        else  {
+            currentPlayer.moveCrew(destinationRegion);
             //debug
             System.err.println("citycrew from (" + oldM + ", " + oldN + ") to (" + currentPlayer.getCityCrewInfo().positionM + ", " + currentPlayer.getCityCrewInfo().positionN + ")");
         }
-        else done();
     }
 
-    public void invest(Double amount) throws DoneExecuteException{
+    public void invest(double amount) throws DoneExecuteException{
+        if(currentPlayer.budget() < 1) done();
+        currentPlayer.spend(1);
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         peekRegion region = territory.getCurrentRegionInfo(crew);
-        if(currentPlayer.budget() < 1) done();
-        if(territory.isInBound(region) && !isRegionOfOpponent(region) && currentPlayer.budget() >= amount+1) {
-            currentPlayer.spend(amount);
-            territory.invest(crew, region, amount);
+
+        if(territory.isInBound(region) && !isOpponentRegion(region) && currentPlayer.budget() >= amount) {
+            double gap = configVals.get("max_dep") - region.deposit;
+            if(gap >= amount){
+                currentPlayer.spend(amount);
+                territory.invest(crew, region, amount);
+            } else {
+                currentPlayer.spend(gap);
+                territory.invest(crew, region, gap);
+            }
         }
-        currentPlayer.spend(1);
     }
 
-    public void collect(Double amount) throws DoneExecuteException{
+    public void collect(double amount) throws DoneExecuteException{
+        if(currentPlayer.budget() < 1) done();
+        currentPlayer.spend(1);
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         peekRegion region = territory.getInfoOfRegion(crew.positionM, crew.positionN);
-        if(currentPlayer.budget() < 1) done();
-        else if (region.deposit >= amount) {
+
+        if(territory.isInBound(region) && isOwnerRegion(region) && region.deposit >= amount) {
             territory.collect(crew, amount);
             currentPlayer.reciveDeposit(amount);
+            if(region.deposit == amount && currentPlayer.lostRegion(region).equals("defeat")){
+                territory.clearOwnerRegionOf(crew);
+            }
         }
-        currentPlayer.spend(1);
     }
 
-    public void shoot(Double amount, String direction) throws DoneExecuteException{
-        if(!(currentPlayer.budget() >= 1))   done();
+    public void shoot(double amount, String direction) throws DoneExecuteException{
+        if(currentPlayer.budget() < 1) done();
         currentPlayer.spend(1);
-
-        if(!(currentPlayer.budget() >= amount)) return;
-        int interestM = currentPlayer().getCityCrewInfo().positionM;
-        int interestN = currentPlayer().getCityCrewInfo().positionN;
+        if(currentPlayer.budget() < amount) return;
+        currentPlayer.spend(amount);
+        peekCiryCrew crew = currentPlayer.getCityCrewInfo();
 //        switch (direction){
 //            case (1) -> interestM++;
 //            case (2) -> {
@@ -373,9 +384,7 @@ public class internalOperator implements internalOperatorInterface {
 //                interestM-=interestN%2;
 //            }
 //        }
-        currentPlayer.spend(amount+1);
-
-        Graph.GraphNode node = Graph.instance().getGraph()[interestM][interestN].getAtDirection(direction);
+        Graph.GraphNode node = Graph.instance().getGraph()[crew.positionM][crew.positionN].getAtDirection(direction);
         if(node == null) return;
 
         peekRegion target = territory.getInfoOfRegion(node.getRow(), node.getCol());
@@ -384,14 +393,6 @@ public class internalOperator implements internalOperatorInterface {
             if(targetPlayer.lostRegion(target).equals("defeat")){
                 // need clear owner region
                 territory.clearOwnerRegionOf(targetPlayer.getCityCrewInfo());
-//                peekCiryCrew ghostCrew = new peekCiryCrew(-1, -1, -1);
-//                Iterator<peekRegion> regions =  targetPlayer.getOwnRegions().iterator();
-//                while(regions.hasNext()){
-//                    peekRegion current = regions.next();
-//                    ghostCrew.positionM = current.positionM;
-//                    ghostCrew.positionN = current.positionN;
-//                    territory.takeRegion(ghostCrew);
-//                }
             }
         }
     }
