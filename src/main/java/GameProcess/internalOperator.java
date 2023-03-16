@@ -220,19 +220,18 @@ public class internalOperator implements internalOperatorInterface {
         return 0;
     }
 
-    public void NextTurn() throws WonException{
+    public void NextTurn() throws  WonException{
         totalTurn++;
         realTurn = (int) Math.round(totalTurn * 1.0/totalPlayers);
         // debug
         System.err.println("Turn : " + realTurn);
         currentPlayer = currentPlayer();
-        if(currentPlayer.isDefeat())  return;
-//        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getIndexCurrentPlayer()));
+        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getIndexCurrentPlayer()));
         territory.startTurn(currentPlayer.getCityCrewInfo(), realTurn);
         currentPlayer.startTurn();
     }
 
-    public void actionProcess(Action.FinalActionState currentAction) throws DoneExecuteException{
+    public void actionProcess(Action.FinalActionState currentAction) throws DoneExecuteException, WonException{
         String key = currentAction.getAction();
         String direction = currentAction.getDirection();
         int value = currentAction.getValue();
@@ -244,6 +243,8 @@ public class internalOperator implements internalOperatorInterface {
             case "collect" -> collect(value);
             case "shoot" -> shoot(value, direction);
         }
+        if(currentPlayer.isDefeat())  throw new DoneExecuteException();
+        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getIndexCurrentPlayer()));
     }
 
     @Override
@@ -391,11 +392,11 @@ public class internalOperator implements internalOperatorInterface {
     private boolean isCurrentPlayerWon(){
         int count = 0;
         for (player player : players){
-            if (player != currentPlayer && player.isDefeat()){
+            if ((player != currentPlayer && player.isDefeat()) || (player == currentPlayer && !player.isDefeat())){
                 count++;
             }
         }
-        return players.size()-1 == count;
+        return players.size() == count;
     }
 
     public DisplayPlayer[] getAllPlayers(){
