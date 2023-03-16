@@ -2,7 +2,6 @@ import org.junit.jupiter.api.Test;
 import GameProcess.*;
 import AST.*;
 import Exception.*;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class callVariableTest {
+    private GameSystem game;
 
     private HashMap<String, Double> getConfigVals(){
         HashMap<String ,Double> configVals = new HashMap<>();
@@ -61,12 +61,6 @@ class callVariableTest {
         }
     }
 
-    private void GameSystemTest(Path path) throws SyntaxError{
-        internalOperator game = new internalOperator(getConfigVals());
-        game.addPlayer(readFromFile(path).toString());
-        game.NextTurn();
-    }
-
     private StringBuilder readFromFile(Path path){
         if(path == null)
             return new StringBuilder();
@@ -90,6 +84,22 @@ class callVariableTest {
         }
     }
 
+    private void GameSystemTest(Path path) throws WonException {
+        game = new GameSystem(getConfigVals());
+        game.addPlayer(readFromFile(path).toString());
+        game.addPlayer(readFromFile(path).toString());
+        game.nextTurn();
+
+        while (true){
+            try{
+                game.nextAction();
+            } catch (DoneExecuteException e){
+//                System.out.println(game.getCurrentPlayer());
+                return;
+            }
+        }
+    }
+
     @Test
     void planIfTest() {
         printIteratorTest(Paths.get("src/test/AllPlanTestFiles/IfTestFiles/ifPlan0.txt"));
@@ -102,7 +112,7 @@ class callVariableTest {
     }
 
     @Test
-    void caseOne() throws SyntaxError {
+    void caseOne() throws WonException {
         // printIteratorTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
 
 //         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));

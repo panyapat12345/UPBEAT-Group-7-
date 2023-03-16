@@ -16,4 +16,21 @@ public class DisplayPlayer {
         this.crew = crew;
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(playerIndex);
+        s.append(" (");
+        s.append(cityCenterPosM);
+        s.append(", ");
+        s.append(cityCenterPosN);
+        s.append(") ");
+        s.append(budget);
+        s.append(" ");
+        s.append(status);
+        s.append(" ");
+        s.append(crew);
+        return s.toString();
+    }
 }
