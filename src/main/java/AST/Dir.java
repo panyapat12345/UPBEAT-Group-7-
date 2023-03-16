@@ -1,6 +1,8 @@
 package AST;
 import Exception.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Dir implements Node{
     private String dir;
     private final String[] possibleDirs = {"up", "down", "upleft", "upright", "downleft", "downright"};

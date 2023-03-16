@@ -1,7 +1,9 @@
 package Graph;
 
-import java.util.LinkedList;
+import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
+@Component
 public class Graph {
     /**
      * A class for creating nodes in a graph.

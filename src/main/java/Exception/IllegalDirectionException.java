@@ -1,5 +1,8 @@
 package Exception;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class IllegalDirectionException extends RuntimeException{
     public IllegalDirectionException() {
         super();

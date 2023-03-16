@@ -1,6 +1,8 @@
 package AST;
-import java.util.Map;
+import org.springframework.stereotype.Component;
 
+import java.util.Map;
+@Component
 public interface ConState extends State{
     boolean checkCon(Map<String, Integer> bindings);
 

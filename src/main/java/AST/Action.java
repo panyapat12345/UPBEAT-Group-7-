@@ -1,10 +1,11 @@
 package AST;
 import Exception.*;
+import org.springframework.stereotype.Component;
+
 import java.util.Map;
 
-public class
-
-Action implements Command{
+@Component
+public class Action implements Command{
     private String key;
     private String[] possibleKeys = {"done", "relocate", "move", "invest", "collect", "shoot"};
     private Dir left;

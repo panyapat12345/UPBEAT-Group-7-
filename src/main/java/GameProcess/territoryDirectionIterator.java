@@ -1,7 +1,9 @@
 package GameProcess;
 
-import java.util.List;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+@Component
 public class territoryDirectionIterator{
     List<peekRegion> listRegion = null;
     int index = 0;

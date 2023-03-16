@@ -1,13 +1,14 @@
 package GameProcess;
 
 import GameProcess.Display.DisplayRegion;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
-
+@Component
 public class Territory implements territoryInterface {
     private int m = 0;
     private int n = 0;

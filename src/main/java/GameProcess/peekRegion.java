@@ -1,5 +1,8 @@
 package GameProcess;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class peekRegion {
     public int playerOwnerIndex;
     public Double deposit;

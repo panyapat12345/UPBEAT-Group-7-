@@ -1,5 +1,8 @@
 package GameProcess.Display;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DisplayPlayer {
     private int playerIndex;
     private int cityCenterPosM;

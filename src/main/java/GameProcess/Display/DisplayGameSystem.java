@@ -1,7 +1,9 @@
 package GameProcess.Display;
 
 import AST.Action;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DisplayGameSystem {
     private String status;
     private Action.FinalActionState action;

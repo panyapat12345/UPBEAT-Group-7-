@@ -1,7 +1,9 @@
 package Tokenizer;
 import Exception.*;
-import java.util.NoSuchElementException;
+import org.springframework.stereotype.Component;
 
+import java.util.NoSuchElementException;
+@Component
 public class PlanTokenizer implements Tokenizer{
     private String src, next, prevNext;
     private int pos, prevPos;

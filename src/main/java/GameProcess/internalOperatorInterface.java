@@ -1,5 +1,8 @@
 package GameProcess;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public interface internalOperatorInterface {
     int rows();
     int cols();

@@ -1,9 +1,10 @@
 package GameProcess;
 
 import GameProcess.Display.DisplayPlayer;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
-
+@Component
 public class player implements playerInterface {
     private int playerIndex = -1;
     private int cityCenterPositionM ;

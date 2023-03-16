@@ -1,7 +1,9 @@
 package Parser;
 import Exception.*;
 import AST.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface Parser {
     State parse() throws SyntaxError;
 

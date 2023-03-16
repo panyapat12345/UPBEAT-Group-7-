@@ -1,7 +1,9 @@
 package AST;
 import Exception.*;
-import java.util.Map;
+import org.springframework.stereotype.Component;
 
+import java.util.Map;
+@Component
 public class If implements ConState{
     private Expr expr;
     private State trueState, falseState;

@@ -1,8 +1,10 @@
 package AST;
 import Exception.*;
 import GameProcess.internalOperator;
-import java.util.Map;
+import org.springframework.stereotype.Component;
 
+import java.util.Map;
+@Component
 public class InfoExpr implements Expr{
     private String key;
     private String[] possibleKeys = {"opponent", "nearby"};

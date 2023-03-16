@@ -2,6 +2,7 @@ package AST;
 import Parser.*;
 import Tokenizer.*;
 import Exception.*;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
-
+@Component
 public class PlanTree implements Tree{
     private State root;
     private Map<String, Integer> bindings = new HashMap<>();;

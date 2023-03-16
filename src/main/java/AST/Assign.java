@@ -1,7 +1,9 @@
 package AST;
 import java.util.Map;
 import Exception.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Assign implements Command{
     private Identifier left;
     private Expr right;

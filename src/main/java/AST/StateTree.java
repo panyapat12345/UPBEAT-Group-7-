@@ -1,8 +1,10 @@
 package AST;
 import Exception.*;
+import org.springframework.stereotype.Component;
+
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+@Component
 public class StateTree implements State{
     private  State data, next;
 

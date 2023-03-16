@@ -1,5 +1,8 @@
 package GameProcess;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public interface territoryInterface {
     peekRegion getCurrentRegionInfo(int m, int n);
     boolean isInBound(int M, int N);

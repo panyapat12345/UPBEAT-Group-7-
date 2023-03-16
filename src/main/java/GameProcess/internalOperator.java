@@ -10,7 +10,9 @@ import Graph.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import Exception.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class internalOperator implements internalOperatorInterface {
     private static internalOperator instance;
     private HashMap<String, Double> configVals;
@@ -397,6 +399,13 @@ public class internalOperator implements internalOperatorInterface {
             }
         }
         return players.size() == count;
+    }
+
+    public boolean changePlan(){
+        if(currentPlayer.budget() < configVals.get("rev_cost"))
+            return false;
+        currentPlayer.spend(configVals.get("rev_cost"));
+        return true;
     }
 
     public DisplayPlayer[] getAllPlayers(){

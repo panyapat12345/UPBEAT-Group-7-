@@ -2,7 +2,9 @@ package AST;
 import Exception.*;
 import java.util.Map;
 import GameProcess.internalOperator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Identifier implements Expr{
     private String name;
     private final String[] reservedWords = {"collect", "done", "down", "downleft", "downright", "else",

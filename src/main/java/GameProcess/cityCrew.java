@@ -1,7 +1,9 @@
 package GameProcess;
 
 import GameProcess.Display.DisplayCityCrew;
+import org.springframework.stereotype.Component;
 
+@Component
 public class cityCrew{
     private int crewOfPlayer = -1;
     private int positionM = -1;

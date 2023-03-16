@@ -3,8 +3,10 @@ import AST.Number;
 import Exception.*;
 import Tokenizer.*;
 import AST.*;
-import java.util.NoSuchElementException;
+import org.springframework.stereotype.Component;
 
+import java.util.NoSuchElementException;
+@Component
 public class PlanParser implements Parser{
     private Tokenizer tkz;
     private final String[] possibleActionKeys = {"done", "relocate", "move", "invest", "collect", "shoot"};

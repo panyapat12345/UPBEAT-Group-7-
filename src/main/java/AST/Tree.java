@@ -1,9 +1,11 @@
 package AST;
 
+import org.springframework.stereotype.Component;
+
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Map;
-
+@Component
 public interface Tree extends Iterable<Action.FinalActionState>{
     boolean changePlan(String s);
 

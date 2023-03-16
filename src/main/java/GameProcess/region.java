@@ -1,7 +1,9 @@
 package GameProcess;
 
 import GameProcess.Display.DisplayRegion;
+import org.springframework.stereotype.Component;
 
+@Component
 public class region {
     private int playerOwnerIndex = 0;
     private Double deposit = 0.0;

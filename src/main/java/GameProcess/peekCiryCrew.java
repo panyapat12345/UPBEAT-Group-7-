@@ -1,5 +1,8 @@
 package GameProcess;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class peekCiryCrew {
     public int crewOfPlayer;
     public int positionM;

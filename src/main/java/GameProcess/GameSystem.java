@@ -8,11 +8,14 @@ import GameProcess.Display.DisplayGameSystem;
 import GameProcess.Display.DisplayPlayer;
 import GameProcess.Display.DisplayRegion;
 import Exception.*;
-
+import Sever.ConfigMessage;
+import org.springframework.stereotype.Component;
+import Sever.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+@Component
 public class GameSystem {
     private internalOperator game;
     private int maxPlayer = 2;
@@ -29,6 +32,20 @@ public class GameSystem {
 
     public GameSystem(HashMap<String, Double> configVals){
         game = new internalOperator(configVals);
+    }
+
+    public GameSystem(ConfigMessage configMessage){
+        this(configMessage.getM(),
+            configMessage.getN(),
+            configMessage.getInit_plan_min(),
+            configMessage.getInit_plan_sec(),
+            configMessage.getInit_budget(),
+            configMessage.getInit_center_dep(),
+            configMessage.getPlan_rev_min(),
+            configMessage.getPlan_rev_sec(),
+            configMessage.getRev_cost(),
+            configMessage.getMax_dep(),
+            configMessage.getInterest_pct());
     }
 
     public static boolean isCorrectSyntax(String constructionPlan){
@@ -57,7 +74,7 @@ public class GameSystem {
         return true;
     }
 
-    private void start(){
+    public void start(){
         for (String buffer : buffers){
             addPlayer(buffer);
         }
@@ -109,6 +126,8 @@ public class GameSystem {
         catch (Exception e) {
             return false;
         }
+
+        if(!game.changePlan()) return false;
         int currentPlayerIndex = game.getIndexCurrentPlayer();
         buffers[currentPlayerIndex] = constructionPlan;
         constructionPlans[currentPlayerIndex] = tree;
@@ -143,5 +162,14 @@ public class GameSystem {
 
     public DisplayGameSystem getCurrentGameSystem(String status){
         return new DisplayGameSystem(status, this.currentAction, new DisplayPlayer[]{game.getCurrentPlayer()}, game.getCurrentTerritory());
+    }
+
+    public ConstructMessage getCurrentPlayerData(){
+        int index = game.getIndexCurrentPlayer();
+        return new ConstructMessage(index, buffers[index]);
+    }
+
+    public Action.FinalActionState getCurrentAction(){
+        return currentAction;
     }
 }

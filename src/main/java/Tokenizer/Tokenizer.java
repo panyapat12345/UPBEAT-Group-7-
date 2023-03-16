@@ -1,6 +1,8 @@
 package Tokenizer;
 import Exception.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface Tokenizer {
     boolean hasNextToken();
     String peek();

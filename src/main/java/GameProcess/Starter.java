@@ -1,8 +1,10 @@
 package GameProcess;
 
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.util.*;
-
+@Component
 public class Starter {
     public Starter() throws Exception {
         HashMap<String, Double> Variables = new HashMap<>();
