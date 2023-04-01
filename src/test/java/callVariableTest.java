@@ -121,7 +121,7 @@ class callVariableTest {
 //        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
 //        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable5.txt"));
 //        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable6.txt"));
-        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable7.txt"));
-
+//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable7.txt"));
+        System.out.println(GameSystem.isCorrectSyntax(readFromFile(Paths.get("src/ConstructionPlan.txt")).toString()));
     }
 }

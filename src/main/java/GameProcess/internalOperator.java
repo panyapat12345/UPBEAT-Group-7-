@@ -1,8 +1,5 @@
 package GameProcess;
 import AST.Action;
-import AST.PlanTree;
-import AST.Tree;
-import GameProcess.Display.DisplayCityCrew;
 import GameProcess.Display.DisplayPlayer;
 import GameProcess.Display.DisplayRegion;
 import Graph.*;
@@ -15,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class internalOperator implements internalOperatorInterface {
     private static internalOperator instance;
-    private HashMap<String, Double> configVals;
+    private HashMap<String, Double> configVals = new HashMap<>();
     private Territory territory;
     private LinkedList<player> players = new LinkedList<>();
     private int totalPlayers = 0;
@@ -57,7 +54,7 @@ public class internalOperator implements internalOperatorInterface {
 
     public void addPlayer(String constructionPlan){
         // set up
-        int cityCenterPositionM = 50 + totalPlayers*10, cityCenterPositionN = 50 + totalPlayers*10;
+        int cityCenterPositionM = 0 + totalPlayers*5, cityCenterPositionN = 0 + totalPlayers*5;
         player newPlayer = new player(totalPlayers, cityCenterPositionM, cityCenterPositionN, configVals.get("init_budget"));
         totalPlayers++;
         territory.newCityCenter(newPlayer.getCityCrewInfo());
@@ -104,7 +101,7 @@ public class internalOperator implements internalOperatorInterface {
     public int random() { return ThreadLocalRandom.current().nextInt(0, 999); }
 
     private boolean isOpponentRegion(int m, int n){
-        int currentPlayer = getIndexCurrentPlayer();
+        int currentPlayer = getCurrentPlayerIndex();
         peekRegion region = territory.getInfoOfRegion(m, n);
         if(!region.Type.equals("null") && !(region.playerOwnerIndex == -1) && region.playerOwnerIndex != currentPlayer)
             return true;
@@ -120,7 +117,7 @@ public class internalOperator implements internalOperatorInterface {
     }
 
     private boolean isOwnerRegion(int m, int n){
-        int currentPlayer = getIndexCurrentPlayer();
+        int currentPlayer = getCurrentPlayerIndex();
         peekRegion region = territory.getInfoOfRegion(m, n);
         if (!region.Type.equals("null") && region.playerOwnerIndex == currentPlayer)
             return true;
@@ -228,7 +225,7 @@ public class internalOperator implements internalOperatorInterface {
         // debug
         System.err.println("Turn : " + realTurn);
         currentPlayer = currentPlayer();
-        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getIndexCurrentPlayer()));
+        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getCurrentPlayerIndex()));
         territory.startTurn(currentPlayer.getCityCrewInfo(), realTurn);
         currentPlayer.startTurn();
     }
@@ -246,16 +243,16 @@ public class internalOperator implements internalOperatorInterface {
             case "shoot" -> shoot(value, direction);
         }
         if(currentPlayer.isDefeat())  throw new DoneExecuteException();
-        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getIndexCurrentPlayer()));
+        if(isCurrentPlayerWon())    throw new WonException(String.valueOf(getCurrentPlayerIndex()));
     }
 
     @Override
     public player currentPlayer() {
-        return players.get(getIndexCurrentPlayer());
+        return players.get(getCurrentPlayerIndex());
     }
 
-    public int getIndexCurrentPlayer(){
-        return (totalTurn-1) %totalPlayers;
+    public int getCurrentPlayerIndex(){
+        return (totalTurn-1) % totalPlayers;
     }
 
     public void done() throws DoneExecuteException {

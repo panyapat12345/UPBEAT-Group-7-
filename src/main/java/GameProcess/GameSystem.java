@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import Sever.*;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 @Component
 public class GameSystem {
@@ -75,11 +74,13 @@ public class GameSystem {
     }
 
     public void start(){
+        System.out.println(buffers);
         for (String buffer : buffers){
             addPlayer(buffer);
         }
         try{
             game.NextTurn();
+            currentPlan =  constructionPlans[game.getCurrentPlayerIndex()].iteratorRealTime();
         } catch(WonException e){
             return;
         }
@@ -89,7 +90,7 @@ public class GameSystem {
         try {
 //            totalTurn++;
             game.NextTurn();
-            currentPlan =  constructionPlans[game.getIndexCurrentPlayer()].iteratorRealTime();
+            currentPlan =  constructionPlans[game.getCurrentPlayerIndex()].iteratorRealTime();
         } catch (WonException e){
             return true;
         }
@@ -128,15 +129,19 @@ public class GameSystem {
         }
 
         if(!game.changePlan()) return false;
-        int currentPlayerIndex = game.getIndexCurrentPlayer();
+        int currentPlayerIndex = game.getCurrentPlayerIndex();
         buffers[currentPlayerIndex] = constructionPlan;
         constructionPlans[currentPlayerIndex] = tree;
         currentPlan =  constructionPlans[currentPlayerIndex].iteratorRealTime();
         return true;
     }
 
+    public int getCurrentPlayerIndex() {
+        return game.getCurrentPlayerIndex();
+    }
+
     public DisplayPlan getCurrentPlan(){
-        int index = game.getIndexCurrentPlayer();
+        int index = game.getCurrentPlayerIndex();
         return new DisplayPlan(index, buffers[index]);
     }
 
@@ -157,15 +162,15 @@ public class GameSystem {
     }
 
     public DisplayGameSystem getAllGameSystem(String status){
-        return new DisplayGameSystem(status, this.currentAction, getAllPlayers(), getAllTerritory());
+        return new DisplayGameSystem(game.getCurrentPlayerIndex(), status, this.currentAction, getAllPlayers(), getAllTerritory());
     }
 
     public DisplayGameSystem getCurrentGameSystem(String status){
-        return new DisplayGameSystem(status, this.currentAction, new DisplayPlayer[]{game.getCurrentPlayer()}, game.getCurrentTerritory());
+        return new DisplayGameSystem(game.getCurrentPlayerIndex(), status, this.currentAction, new DisplayPlayer[]{game.getCurrentPlayer()}, game.getCurrentTerritory());
     }
 
     public ConstructMessage getCurrentPlayerData(){
-        int index = game.getIndexCurrentPlayer();
+        int index = game.getCurrentPlayerIndex();
         return new ConstructMessage(index, buffers[index]);
     }
 

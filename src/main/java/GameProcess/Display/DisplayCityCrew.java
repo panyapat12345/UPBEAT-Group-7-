@@ -1,8 +1,10 @@
 package GameProcess.Display;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Component
+@Getter
 public class DisplayCityCrew {
     private int posM;
     private int posN;
