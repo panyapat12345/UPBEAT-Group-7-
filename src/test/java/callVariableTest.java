@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,8 +18,8 @@ class callVariableTest {
 
     private HashMap<String, Double> getConfigVals(){
         HashMap<String ,Double> configVals = new HashMap<>();
-        configVals.put("m", 20.0*5);
-        configVals.put("n", 15.0*10);
+        configVals.put("m", 5.0);
+        configVals.put("n", 10.0);
         configVals.put("init_plan_min", 5.0);
         configVals.put("init_plan_sec", 0.0);
         configVals.put("init_budget", 10000.0);
@@ -115,23 +116,29 @@ class callVariableTest {
     void caseOne() throws WonException {
         // printIteratorTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
 
-//         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
-//         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
-//         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
-//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
-//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable5.txt"));
-//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable6.txt"));
-//        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable7.txt"));
-        System.out.println(GameSystem.isCorrectSyntax(readFromFile(Paths.get("src/ConstructionPlan.txt")).toString()));
+         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable1.txt"));
+         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable2.txt"));
+         GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable3.txt"));
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable4.txt"));
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable5.txt"));
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable6.txt"));
+        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable7.txt"));
+//        System.out.println(GameSystem.isCorrectSyntax(readFromFile(Paths.get("src/ConstructionPlan.txt")).toString()));
     }
 
     @Test
     void caseClock(){
+        /*
         Clock clock = new Clock(1,0,1,0);
         System.out.println("Init_plan_sec : " + clock.getInit_plan_sec());
         System.out.println("Plan_rev_sec : " + clock.getPlan_rev_sec());
         clock.setPlan_rev_sec(555);
         System.out.println("Plan_rev_sec : " + clock.getPlan_rev_sec());
+
+         */
+
+        for(int i=0; i<10; i++)
+            System.out.println(ThreadLocalRandom.current().nextInt(0, 5));
 
     }
 

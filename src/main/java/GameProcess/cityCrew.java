@@ -9,7 +9,7 @@ public class cityCrew{
     private int positionM = -1;
     private int positionN = -1;
 
-    public cityCrew(int playerIndex, int PositionN, int PositionM) {
+    public cityCrew(int playerIndex, int PositionM, int PositionN) {
         this.crewOfPlayer = playerIndex;
         this.positionM = PositionM;
         this.positionN = PositionN;

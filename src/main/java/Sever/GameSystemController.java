@@ -16,7 +16,7 @@ public class GameSystemController {
     @MessageMapping("/set/configuration")
     public void newGame(ConfigMessage configMessage){
         System.err.println("new game ......");
-        System.out.println(configMessage);
+//        System.out.println(configMessage);
         gameSystem = new GameSystem(configMessage);
     }
 

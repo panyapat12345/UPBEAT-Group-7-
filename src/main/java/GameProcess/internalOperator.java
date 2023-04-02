@@ -20,6 +20,7 @@ public class internalOperator implements internalOperatorInterface {
     private int realTurn = 0;
     private player currentPlayer = null;
     private List<Map.Entry<Integer, Integer>> startCityCenter = new LinkedList<>();
+    private int[] cityCenterPlayer1Pos;
 
     public internalOperator(HashMap<String, Double> configVals) {
         this.configVals = configVals;
@@ -52,10 +53,24 @@ public class internalOperator implements internalOperatorInterface {
         return instance;
     }
 
+    public int[] randomCityCenterPos(){
+        int m = ThreadLocalRandom.current().nextInt(0, configVals.get("m").intValue());
+        int n = ThreadLocalRandom.current().nextInt(0, configVals.get("n").intValue());
+        return new int[]{m, n};
+    }
+
     public void addPlayer(String constructionPlan){
         // set up
-        int cityCenterPositionM = 0 + totalPlayers*5, cityCenterPositionN = 0 + totalPlayers*5;
-        player newPlayer = new player(totalPlayers, cityCenterPositionM, cityCenterPositionN, configVals.get("init_budget"));
+        int[] pos = randomCityCenterPos();
+        if(totalPlayers == 0){
+            cityCenterPlayer1Pos = pos;
+        } else {
+            while (pos[0] == cityCenterPlayer1Pos[0] && pos[1] == cityCenterPlayer1Pos[1])
+                pos = randomCityCenterPos();
+        }
+//        System.err.println(pos[0] + ", " + pos[1]);
+
+        player newPlayer = new player(totalPlayers, pos[0], pos[1], configVals.get("init_budget"));
         totalPlayers++;
         territory.newCityCenter(newPlayer.getCityCrewInfo());
         players.add(newPlayer);
