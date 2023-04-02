@@ -78,4 +78,21 @@ public class GameSystemController {
         }
         return new DisplayGameSystem(gameSystem.getCurrentPlayerIndex(), "normal", null, gameSystem.getAllPlayers(), gameSystem.getAllTerritory());
     }
+
+    @MessageMapping("/get/init_plan_sec")
+    @SendTo("/game/get/init_plan_sec")
+    public int getInitPlanSec(){
+        return gameSystem.getInitPlanSec();
+    }
+
+    @MessageMapping("/get/plan_rev_sec")
+    @SendTo("/game/get/plan_rev_sec")
+    public int getPlanRevSec(){
+        return gameSystem.getPlanRevSec();
+    }
+
+    @MessageMapping("/set/plan_rev_sec")
+    public void setPlanRevSec(TimeMessage timeMessage){
+        gameSystem.setPlanRevSec(timeMessage.getSec());
+    }
 }

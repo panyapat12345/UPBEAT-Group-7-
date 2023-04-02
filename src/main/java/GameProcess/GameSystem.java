@@ -22,6 +22,7 @@ public class GameSystem {
 //    private int totalTurn = 0;
     private Tree[] constructionPlans = new Tree[maxPlayer];
     private String[] buffers = new String[maxPlayer];
+    private Clock[] clocks = new Clock[maxPlayer];
     private Iterator<Action.FinalActionState> currentPlan;
     private Action.FinalActionState currentAction;
 
@@ -45,6 +46,13 @@ public class GameSystem {
             configMessage.getRev_cost(),
             configMessage.getMax_dep(),
             configMessage.getInterest_pct());
+
+        for(int i=0; i<maxPlayer; i++){
+            clocks[i] = new Clock(configMessage.getInit_plan_min(),
+                                configMessage.getInit_plan_sec(),
+                                configMessage.getPlan_rev_min(),
+                                configMessage.getPlan_rev_sec());
+        }
     }
 
     public static boolean isCorrectSyntax(String constructionPlan){
@@ -176,5 +184,17 @@ public class GameSystem {
 
     public Action.FinalActionState getCurrentAction(){
         return currentAction;
+    }
+
+    public int getInitPlanSec(){
+        return clocks[0].getInit_plan_sec();
+    }
+
+    public int getPlanRevSec(){
+        return clocks[game.getCurrentPlayerIndex()].getPlan_rev_sec();
+    }
+
+    public void setPlanRevSec(int plan_rev_sec){
+        clocks[game.getCurrentPlayerIndex()].setPlan_rev_sec(plan_rev_sec);
     }
 }

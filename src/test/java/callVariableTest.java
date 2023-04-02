@@ -124,4 +124,15 @@ class callVariableTest {
 //        GameSystemTest(Paths.get("src/test/AllPlanTestFiles/callVariableTestFiles/variable7.txt"));
         System.out.println(GameSystem.isCorrectSyntax(readFromFile(Paths.get("src/ConstructionPlan.txt")).toString()));
     }
+
+    @Test
+    void caseClock(){
+        Clock clock = new Clock(1,0,1,0);
+        System.out.println("Init_plan_sec : " + clock.getInit_plan_sec());
+        System.out.println("Plan_rev_sec : " + clock.getPlan_rev_sec());
+        clock.setPlan_rev_sec(555);
+        System.out.println("Plan_rev_sec : " + clock.getPlan_rev_sec());
+
+    }
+
 }
