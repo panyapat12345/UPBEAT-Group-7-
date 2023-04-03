@@ -103,19 +103,6 @@ public class GameSystem {
             return true;
         }
         return false;
-        /*
-        Action.FinalActionState currentAction;
-        while(true){
-            currentAction = currentPlan.next();
-            if (currentAction == null) break;
-            try {
-                System.out.println(currentAction);
-                game.actionProcess(currentAction);
-            } catch (DoneExecuteException e) {
-                return;
-            }
-        }
- */
     }
 
     public void nextAction() throws DoneExecuteException, WonException{

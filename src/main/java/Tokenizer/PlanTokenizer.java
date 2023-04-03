@@ -60,11 +60,6 @@ public class PlanTokenizer implements Tokenizer{
             }
         // comment case : ignore path of line from # to \n
         } else if(c == '#') {
-/*
-            pos = src.length();
-            next = null;
-            return;
- */
             for(pos++; pos < src.length() && src.charAt(pos) != '\n'; pos++) { }
             if(pos == src.length()){
                 next = null;

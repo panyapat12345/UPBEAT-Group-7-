@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class GameSystemController {
-//    @Autowired
     private GameSystem gameSystem;
 
     @MessageMapping("/set/configuration")
@@ -29,7 +28,7 @@ public class GameSystemController {
     @MessageMapping("/set/constructionPlan")
     public void addBuffer(ConstructMessage constructionPlan){
         System.err.println("add buffer ......");
-        System.out.println(constructionPlan);
+//        System.out.println(constructionPlan);
         gameSystem.addBuffer(constructionPlan.getIndex(), constructionPlan.getConfigurationPlan());
     }
 

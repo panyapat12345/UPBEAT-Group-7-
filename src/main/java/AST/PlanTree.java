@@ -142,7 +142,6 @@ public class PlanTree implements Tree{
                         stack.push(current);
                         current = (StateTree) While.nextState(bindings);
                     } else {
-                        // While.clearCounter();
                         current = downAndUpCompute(current);
                     }
                 }
@@ -180,7 +179,7 @@ public class PlanTree implements Tree{
                         if(current.hasNextState())
                             return (StateTree) current.nextState();
                     }
-                } else {    // If
+                } else {
                     if(current.hasNextState()){
                         return (StateTree) current.nextState();
                     }
@@ -197,9 +196,6 @@ public class PlanTree implements Tree{
         public Action.FinalActionState next() {
             if(hasNext()){
                 Action.FinalActionState result = next;
-                // old code
-//                computeNext();
-
                 // done is last action only
                 if(next.getAction().equals("done"))
                     next = null;
@@ -270,7 +266,6 @@ public class PlanTree implements Tree{
                         stack.push(current);
                         current = (StateTree) While.nextState(bindings);
                     } else {
-                        // While.clearCounter();
                         current = downAndUpCompute(current);
                     }
                 }
@@ -308,7 +303,7 @@ public class PlanTree implements Tree{
                         if(current.hasNextState())
                             return (StateTree) current.nextState();
                     }
-                } else {    // If
+                } else {
                     if(current.hasNextState()){
                         return (StateTree) current.nextState();
                     }

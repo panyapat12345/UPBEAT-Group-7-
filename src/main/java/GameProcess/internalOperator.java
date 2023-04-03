@@ -177,29 +177,6 @@ public class internalOperator implements internalOperatorInterface {
             if(current[0] == null && current[1] == null && current[2] == null && current[3] == null && current[4] == null && current[5] == null)
                 return 0;
         }
-
-//        int interestM = currentPlayer().getCityCrewInfo().positionM;
-//        int interestN = currentPlayer().getCityCrewInfo().positionM;
-//        int nearestRegion = 0;
-//        int distance = Integer.MAX_VALUE;
-//        peekRegion current;
-//
-//        for(int i = 1; i <= 6; i++){
-//            territoryDirectionIterator itr = territory.getTerritoryDirectionIterator(i, interestM, interestN);
-//            for(int j = 0; true; j++){
-//                current = itr.next();
-//                if(current.Type.equals("null")) break;
-//                else if(isRegionOfOpponent(current.positionM, current.positionN)) {
-//                    if(j < distance) {
-//                        distance = j;
-//                        nearestRegion = (10*distance)+i;
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//
-//        return nearestRegion;
     }
 
     @Override
@@ -217,21 +194,6 @@ public class internalOperator implements internalOperatorInterface {
                 }
             } else return 0;
         }
-    }
-
-    public int nearby(int direction) {
-        int interestM = currentPlayer().getCityCrewInfo().positionM;
-        int interestN = currentPlayer().getCityCrewInfo().positionN;
-        territoryDirectionIterator itr = territory.getTerritoryDirectionIterator(direction, interestM, interestN);
-        peekRegion current;
-        for(int i = 0; true; i++){
-            current = itr.next();
-            if(current.Type.equals("null")) break;
-            else if(isOpponentRegion(current.positionM, current.positionN)) {
-                return (100*i)+(int)(Math.floor(Math.log10(territory.getInfoOfRegion(interestM, interestN).deposit)));
-            }
-        }
-        return 0;
     }
 
     public void NextTurn() throws  WonException{
@@ -295,26 +257,7 @@ public class internalOperator implements internalOperatorInterface {
 
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
         int oldM = crew.positionM, oldN = crew.positionN;
-//        switch (direction){
-//            case (1) -> interestM++;
-//            case (2) -> {
-//                interestN++;
-//                interestM-=interestN%2;
-//            }
-//            case (3) -> {
-//                interestN++;
-//                interestM+=(interestN+1)%2;
-//            }
-//            case (4) -> interestM--;
-//            case (5) -> {
-//                interestN--;
-//                interestM+=(interestN+1)%2;
-//            }
-//            case (6) -> {
-//                interestN--;
-//                interestM-=interestN%2;
-//            }
-//        }
+
         Graph.GraphNode node = Graph.instance().getGraph()[crew.positionM][crew.positionN].getAtDirection(direction);
         if(node == null) return;
 
@@ -370,26 +313,7 @@ public class internalOperator implements internalOperatorInterface {
         if(currentPlayer.budget() < amount) return;
         currentPlayer.spend(amount);
         peekCiryCrew crew = currentPlayer.getCityCrewInfo();
-//        switch (direction){
-//            case (1) -> interestM++;
-//            case (2) -> {
-//                interestN++;
-//                interestM-=interestN%2;
-//            }
-//            case (3) -> {
-//                interestN++;
-//                interestM+=interestN%2;
-//            }
-//            case (4) -> interestM--;
-//            case (5) -> {
-//                interestN--;
-//                interestM+=interestN%2;
-//            }
-//            case (6) -> {
-//                interestN--;
-//                interestM-=interestN%2;
-//            }
-//        }
+
         Graph.GraphNode node = Graph.instance().getGraph()[crew.positionM][crew.positionN].getAtDirection(direction);
         if(node == null) return;
 

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
 @Component
-public class Territory implements territoryInterface {
+public class Territory {
     private int m = 0;
     private int n = 0;
     private  int turn = 0;
@@ -66,36 +66,6 @@ public class Territory implements territoryInterface {
         regions[crew.positionM][crew.positionN].newCityCenter(crew, configVals.get("init_center_dep"));
     }
 
-    public territoryDirectionIterator getTerritoryDirectionIterator(int direction, int interestM, int interestN) {
-        List<peekRegion> listRegion = new LinkedList<>();
-        for(int i = 0; true; i++){
-            switch (direction){
-                case (1) -> interestM++;
-                case (2) -> {
-                    interestN++;
-                    interestM-=interestN%2;
-                }
-                case (3) -> {
-                    interestN++;
-                    interestM+=interestN%2;
-                }
-                case (4) -> interestM--;
-                case (5) -> {
-                    interestN--;
-                    interestM+=interestN%2;
-                }
-                case (6) -> {
-                    interestN--;
-                    interestM-=interestN%2;
-                }
-            }
-            listRegion.add(getCurrentRegionInfo(interestM, interestN));
-            if(listRegion.get(i).Type.equals("null")) break;
-        }
-
-        return new territoryDirectionIterator(listRegion);
-    }
-
     public void relocate(peekCiryCrew crew, peekRegion from, peekRegion to){
         regions[to.positionM][to.positionN].returnOwner();
         regions[to.positionM][to.positionN].newCityCenter(crew, regions[to.positionM][to.positionN].deposit());
@@ -105,7 +75,6 @@ public class Territory implements territoryInterface {
         System.err.println("relocate city center from (" + from.positionM + ", " + from.positionN + ") to (" + to.positionM + ", " +to.positionN + ")");
     }
 
-    @Override
     public peekRegion getCurrentRegionInfo(int m, int n) {
         return regions[m][n].getInfo(m, n, turn);
     }

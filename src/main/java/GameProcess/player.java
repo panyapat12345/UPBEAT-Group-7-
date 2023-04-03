@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 @Component
-public class player implements playerInterface {
+public class player {
     private int playerIndex = -1;
     private int cityCenterPositionM ;
     private int cityCenterPositionN;
@@ -26,12 +26,10 @@ public class player implements playerInterface {
         crew.startTurn(cityCenterPositionM, cityCenterPositionN);
     }
 
-    @Override
     public boolean isDefeat() {
         return status.equals("defeat");
     }
 
-    @Override
     public int budget() {
         return budget.intValue();
     }
@@ -40,7 +38,6 @@ public class player implements playerInterface {
 
     public void receiveDeposit(double amount) { budget += amount; }
 
-    @Override
     public peekCiryCrew getCityCrewInfo() {
         return crew.getCityCrewInfo();
     }
